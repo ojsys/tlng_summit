@@ -17,7 +17,7 @@ load_dotenv()
 DEBUG = False
 
 # Update this with your actual domain
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'yourdomain.com,www.yourdomain.com').split(',')
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'transportandlogisticssummit.ng,www.transportandlogisticssummit.ng').split(',')
 
 # Database for production (MySQL/MariaDB)
 DATABASES = {
