@@ -1,0 +1,502 @@
+{% extends 'summit/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section{% if site_settings.hero_background_image %} has-custom-bg{% endif %}" 
+         {% if site_settings.hero_background_image %}
+         style="--custom-bg-url: url('{{ site_settings.hero_background_image.url }}')"
+         {% endif %}>
+    <div class="container hero-content">
+        <div class="row align-items-center min-vh-100">
+            <div class="col-lg-7">
+                {% if event_content %}
+                    <div class="hero-badge mb-4">
+                        <span class="badge bg-light text-dark px-4 py-2">
+                            {% if event_content.hero_badge_text %}
+                                {{ event_content.hero_badge_text }} • 
+                            {% endif %}
+                            {{ event_content.event_date|date:"F j, Y" }} • {{ event_content.venue }}
+                        </span>
+                    </div>
+                    <h1 class="hero-title display-3 fw-bold mb-4">{{ event_content.title }}</h1>
+                    <p class="hero-subtitle lead mb-5">{{ event_content.subtitle }}</p>
+                {% else %}
+                    <div class="hero-badge mb-4">
+                        <span class="badge bg-light text-dark px-4 py-2">Coming Soon • Lagos, Nigeria</span>
+                    </div>
+                    <h1 class="hero-title display-3 fw-bold mb-4">Nigeria Transport and Logistics Summit and Awards 2024</h1>
+                    <p class="hero-subtitle lead mb-5">
+                        Join industry leaders, innovators, and stakeholders as we shape the future 
+                        of Nigeria's transport and logistics sector.
+                    </p>
+                {% endif %}
+                
+                <div class="hero-cta d-flex flex-wrap gap-3 mb-5">
+                    <a href="#about" class="btn btn-primary btn-lg px-5">
+                        Learn More
+                    </a>
+                    <a href="{% url 'nominations' %}" class="btn btn-outline-light btn-lg px-5">
+                        Submit Nomination
+                    </a>
+                </div>
+                
+                <div class="hero-stats row text-center">
+                    {% if event_content %}
+                        <div class="col-3">
+                            <div class="stat-number h3 fw-bold">{{ event_content.stat_1_number }}</div>
+                            <div class="stat-label small">{{ event_content.stat_1_label }}</div>
+                        </div>
+                        <div class="col-3">
+                            <div class="stat-number h3 fw-bold">{{ event_content.stat_2_number }}</div>
+                            <div class="stat-label small">{{ event_content.stat_2_label }}</div>
+                        </div>
+                        <div class="col-3">
+                            <div class="stat-number h3 fw-bold">{{ event_content.stat_3_number }}</div>
+                            <div class="stat-label small">{{ event_content.stat_3_label }}</div>
+                        </div>
+                        <div class="col-3">
+                            <div class="stat-number h3 fw-bold">{{ event_content.stat_4_number }}</div>
+                            <div class="stat-label small">{{ event_content.stat_4_label }}</div>
+                        </div>
+                    {% else %}
+                        <div class="col-3">
+                            <div class="stat-number h3 fw-bold">500+</div>
+                            <div class="stat-label small">Attendees</div>
+                        </div>
+                        <div class="col-3">
+                            <div class="stat-number h3 fw-bold">50+</div>
+                            <div class="stat-label small">Speakers</div>
+                        </div>
+                        <div class="col-3">
+                            <div class="stat-number h3 fw-bold">100+</div>
+                            <div class="stat-label small">Companies</div>
+                        </div>
+                        <div class="col-3">
+                            <div class="stat-number h3 fw-bold">2</div>
+                            <div class="stat-label small">Days</div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section id="about" class="section-padding bg-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <div class="about-content">
+                    {% if event_content %}
+                        <h2 class="display-5 fw-bold text-dark mb-4">{{ event_content.about_title }}</h2>
+                        <p class="lead text-muted mb-4">{{ event_content.about_text|truncatewords:50 }}</p>
+                        <div class="about-features">
+                            <div class="feature-item d-flex align-items-center mb-3">
+                                <div class="feature-icon me-3">
+                                    <i class="fas fa-users text-primary-custom"></i>
+                                </div>
+                                <div class="feature-text">
+                                    <strong>{{ event_content.feature_1_title }}</strong> {{ event_content.feature_1_description }}
+                                </div>
+                            </div>
+                            <div class="feature-item d-flex align-items-center mb-3">
+                                <div class="feature-icon me-3">
+                                    <i class="fas fa-lightbulb text-primary-custom"></i>
+                                </div>
+                                <div class="feature-text">
+                                    <strong>{{ event_content.feature_2_title }}</strong> {{ event_content.feature_2_description }}
+                                </div>
+                            </div>
+                            <div class="feature-item d-flex align-items-center">
+                                <div class="feature-icon me-3">
+                                    <i class="fas fa-award text-primary-custom"></i>
+                                </div>
+                                <div class="feature-text">
+                                    <strong>{{ event_content.feature_3_title }}</strong> {{ event_content.feature_3_description }}
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <h2 class="display-5 fw-bold text-dark mb-4">Nigeria's Premier Transport & Logistics Event</h2>
+                        <p class="lead text-muted mb-4">
+                            The Nigeria Transport and Logistics Summit and Awards brings together industry leaders, 
+                            innovators, and decision-makers to shape the future of the transport and logistics sector.
+                        </p>
+                        <div class="about-features">
+                            <div class="feature-item d-flex align-items-center mb-3">
+                                <div class="feature-icon me-3">
+                                    <i class="fas fa-users text-primary-custom"></i>
+                                </div>
+                                <div class="feature-text">
+                                    <strong>Networking Opportunities</strong> with 500+ industry professionals
+                                </div>
+                            </div>
+                            <div class="feature-item d-flex align-items-center mb-3">
+                                <div class="feature-icon me-3">
+                                    <i class="fas fa-lightbulb text-primary-custom"></i>
+                                </div>
+                                <div class="feature-text">
+                                    <strong>Innovation Showcase</strong> featuring latest technologies and solutions
+                                </div>
+                            </div>
+                            <div class="feature-item d-flex align-items-center">
+                                <div class="feature-icon me-3">
+                                    <i class="fas fa-award text-primary-custom"></i>
+                                </div>
+                                <div class="feature-text">
+                                    <strong>Awards Ceremony</strong> recognizing excellence in the industry
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="about-image">
+                    <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
+                         alt="Transport and Logistics" class="img-fluid rounded-lg shadow-lg">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Key Topics Section -->
+<section class="section-padding">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold text-dark">Key Topics & Sessions</h2>
+            <p class="lead text-muted">Explore the themes that will drive our discussions</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="topic-card card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <div class="topic-icon mb-3">
+                            <i class="fas fa-shipping-fast fa-2x text-primary-custom"></i>
+                        </div>
+                        <h5 class="card-title fw-bold">Last-Mile Delivery Innovation</h5>
+                        <p class="card-text text-muted">
+                            Exploring cutting-edge solutions for efficient last-mile delivery in Nigerian cities.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="topic-card card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <div class="topic-icon mb-3">
+                            <i class="fas fa-leaf fa-2x text-primary-custom"></i>
+                        </div>
+                        <h5 class="card-title fw-bold">Sustainable Transport</h5>
+                        <p class="card-text text-muted">
+                            Green logistics solutions and environmentally sustainable transport practices.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="topic-card card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <div class="topic-icon mb-3">
+                            <i class="fas fa-chart-line fa-2x text-primary-custom"></i>
+                        </div>
+                        <h5 class="card-title fw-bold">Supply Chain Optimization</h5>
+                        <p class="card-text text-muted">
+                            Advanced strategies for optimizing supply chain operations across West Africa.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="topic-card card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <div class="topic-icon mb-3">
+                            <i class="fas fa-robot fa-2x text-primary-custom"></i>
+                        </div>
+                        <h5 class="card-title fw-bold">Digital Transformation</h5>
+                        <p class="card-text text-muted">
+                            AI, IoT, and automation in modern transport and logistics operations.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="topic-card card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <div class="topic-icon mb-3">
+                            <i class="fas fa-handshake fa-2x text-primary-custom"></i>
+                        </div>
+                        <h5 class="card-title fw-bold">Public-Private Partnerships</h5>
+                        <p class="card-text text-muted">
+                            Collaborative approaches to infrastructure development and transport solutions.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="topic-card card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <div class="topic-icon mb-3">
+                            <i class="fas fa-globe-africa fa-2x text-primary-custom"></i>
+                        </div>
+                        <h5 class="card-title fw-bold">Regional Integration</h5>
+                        <p class="card-text text-muted">
+                            Cross-border transport solutions and African Continental Free Trade Area opportunities.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Speakers Section -->
+{% if featured_speakers %}
+<section class="section-padding bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="text-primary-custom">Featured Speakers</h2>
+            <p class="lead">Meet some of our distinguished speakers</p>
+        </div>
+        
+        <div class="row">
+            {% for speaker in featured_speakers %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card speaker-card card-hover h-100">
+                    {% if speaker.photo %}
+                        <img src="{{ speaker.photo.url }}" class="card-img-top" alt="{{ speaker.name }}">
+                    {% else %}
+                        <div class="card-img-top bg-primary-custom d-flex align-items-center justify-content-center" 
+                             style="height: 300px;">
+                            <i class="fas fa-user fa-4x text-white"></i>
+                        </div>
+                    {% endif %}
+                    <div class="card-body text-center">
+                        <h5 class="card-title">{{ speaker.name }}</h5>
+                        <p class="card-text text-muted">{{ speaker.title }}</p>
+                        {% if speaker.company %}
+                            <p class="card-text"><small class="text-primary-custom">{{ speaker.company }}</small></p>
+                        {% endif %}
+                        <div class="social-links">
+                            {% if speaker.linkedin_url %}
+                                <a href="{{ speaker.linkedin_url }}" target="_blank" class="text-primary-custom me-2">
+                                    <i class="fab fa-linkedin fa-lg"></i>
+                                </a>
+                            {% endif %}
+                            {% if speaker.twitter_url %}
+                                <a href="{{ speaker.twitter_url }}" target="_blank" class="text-primary-custom">
+                                    <i class="fab fa-twitter fa-lg"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{% url 'speakers' %}" class="btn btn-primary btn-lg">
+                <i class="fas fa-users me-2"></i>View All Speakers
+            </a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Key Features Section -->
+<section class="section-padding">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="text-primary-custom">Why Attend?</h2>
+            <p class="lead">Discover the opportunities that await you</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card card-hover h-100 text-center">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="fas fa-network-wired fa-3x text-primary-custom"></i>
+                        </div>
+                        <h5 class="card-title">Networking</h5>
+                        <p class="card-text">
+                            Connect with industry leaders, decision-makers, and potential business partners 
+                            from across Nigeria and West Africa.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card card-hover h-100 text-center">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="fas fa-lightbulb fa-3x text-primary-custom"></i>
+                        </div>
+                        <h5 class="card-title">Innovation</h5>
+                        <p class="card-text">
+                            Explore cutting-edge technologies, innovative solutions, and emerging trends 
+                            in transport and logistics.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card card-hover h-100 text-center">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="fas fa-award fa-3x text-primary-custom"></i>
+                        </div>
+                        <h5 class="card-title">Awards</h5>
+                        <p class="card-text">
+                            Celebrate excellence in the industry and recognition of outstanding 
+                            contributions to Nigeria's transport sector.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Sponsors Section -->
+{% if sponsors %}
+<section class="section-padding bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold text-dark mb-4">Our Sponsors & Partners</h2>
+            <p class="lead text-muted">Proudly supported by industry leaders and innovators</p>
+        </div>
+        
+        <!-- Sponsor Categories -->
+        <div class="sponsors-grid">
+            <!-- Platinum/Gold Sponsors (Larger) -->
+            <div class="row justify-content-center mb-5">
+                <div class="col-12">
+                    <h5 class="text-center text-primary-custom mb-4">Principal Sponsors</h5>
+                </div>
+                {% for sponsor in sponsors %}
+                    {% if sponsor.level.name == 'platinum' or sponsor.level.name == 'gold' %}
+                    <div class="col-lg-3 col-md-4 col-6 mb-4">
+                        <div class="sponsor-card text-center p-4" data-level="{{ sponsor.level.name }}">
+                            {% if sponsor.logo %}
+                                <div class="sponsor-logo-container">
+                                    {% if sponsor.website %}
+                                        <a href="{{ sponsor.website }}" target="_blank" rel="noopener">
+                                    {% endif %}
+                                    <img src="{{ sponsor.logo.url }}" alt="{{ sponsor.name }}" 
+                                         class="img-fluid sponsor-logo-large">
+                                    {% if sponsor.website %}</a>{% endif %}
+                                </div>
+                            {% else %}
+                                <div class="sponsor-placeholder bg-white border rounded p-3">
+                                    {% if sponsor.website %}
+                                        <a href="{{ sponsor.website }}" target="_blank" rel="noopener" class="text-decoration-none">
+                                    {% endif %}
+                                    <h6 class="mb-0 text-primary-custom">{{ sponsor.name }}</h6>
+                                    {% if sponsor.website %}</a>{% endif %}
+                                </div>
+                            {% endif %}
+                            {% if sponsor.level.name == 'platinum' %}
+                                <div class="sponsor-badge mt-2">
+                                    <span class="badge bg-warning text-dark">Platinum Partner</span>
+                                </div>
+                            {% elif sponsor.level.name == 'gold' %}
+                                <div class="sponsor-badge mt-2">
+                                    <span class="badge bg-warning text-dark">Gold Partner</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            
+            <!-- Silver/Bronze Sponsors (Smaller) -->
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <h6 class="text-center text-muted mb-4">Supporting Partners</h6>
+                </div>
+                {% for sponsor in sponsors %}
+                    {% if sponsor.level.name == 'silver' or sponsor.level.name == 'bronze' %}
+                    <div class="col-lg-2 col-md-3 col-4 mb-3">
+                        <div class="sponsor-card-small text-center p-2" data-level="{{ sponsor.level.name }}">
+                            {% if sponsor.logo %}
+                                <div class="sponsor-logo-container">
+                                    {% if sponsor.website %}
+                                        <a href="{{ sponsor.website }}" target="_blank" rel="noopener">
+                                    {% endif %}
+                                    <img src="{{ sponsor.logo.url }}" alt="{{ sponsor.name }}" 
+                                         class="img-fluid sponsor-logo-small">
+                                    {% if sponsor.website %}</a>{% endif %}
+                                </div>
+                            {% else %}
+                                <div class="sponsor-placeholder bg-white border rounded p-2">
+                                    {% if sponsor.website %}
+                                        <a href="{{ sponsor.website }}" target="_blank" rel="noopener" class="text-decoration-none">
+                                    {% endif %}
+                                    <small class="text-primary-custom">{{ sponsor.name }}</small>
+                                    {% if sponsor.website %}</a>{% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="text-center mt-5">
+            <a href="{% url 'sponsorship' %}" class="btn btn-primary btn-lg px-5">
+                <i class="fas fa-handshake me-2"></i>Become a Partner
+            </a>
+            <p class="mt-3 text-muted">
+                <small>Join these industry leaders in supporting Nigeria's premier transport and logistics event</small>
+            </p>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Call to Action Section -->
+<section class="section-padding bg-primary-custom text-white">
+    <div class="container text-center">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="mb-4">Ready to Join Us?</h2>
+                <p class="lead mb-4">
+                    Don't miss this opportunity to be part of Nigeria's most significant 
+                    transport and logistics event of the year.
+                </p>
+                <div class="d-flex flex-wrap justify-content-center gap-3">
+                    <a href="{% url 'nominations' %}" class="btn btn-light btn-lg">
+                        <i class="fas fa-award me-2"></i>Submit Nomination
+                    </a>
+                    <a href="{% url 'sponsorship' %}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-handshake me-2"></i>Partner With Us
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.sponsor-logo img:hover {
+    filter: none !important;
+    opacity: 1 !important;
+    transform: scale(1.1);
+}
+</style>
+{% endblock %}

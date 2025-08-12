@@ -1,0 +1,188 @@
+{% extends 'summit/base.html' %}
+{% load static %}
+
+{% block title %}Speakers - Nigeria Transport and Logistics Summit{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section" style="min-height: 60vh;">
+    <div class="container hero-content">
+        <div class="row">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-4">Our Distinguished Speakers</h1>
+                <p class="lead">
+                    Meet the industry experts, thought leaders, and visionaries who will 
+                    share their insights at the Nigeria Transport and Logistics Summit.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Speakers Section -->
+<section class="section-padding">
+    <div class="container">
+        {% if speakers %}
+            <div class="row">
+                {% for speaker in speakers %}
+                <div class="col-lg-4 col-md-6 mb-5">
+                    <div class="card speaker-card card-hover h-100">
+                        {% if speaker.photo %}
+                            <img src="{{ speaker.photo.url }}" class="card-img-top" alt="{{ speaker.name }}">
+                        {% else %}
+                            <div class="card-img-top bg-primary-custom d-flex align-items-center justify-content-center" 
+                                 style="height: 300px;">
+                                <i class="fas fa-user fa-4x text-white"></i>
+                            </div>
+                        {% endif %}
+                        
+                        {% if speaker.is_featured %}
+                            <div class="position-absolute top-0 end-0 m-2">
+                                <span class="badge bg-warning text-dark">
+                                    <i class="fas fa-star me-1"></i>Featured
+                                </span>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="card-body">
+                            <h5 class="card-title text-primary-custom">{{ speaker.name }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{ speaker.title }}</h6>
+                            {% if speaker.company %}
+                                <p class="card-text"><small class="text-primary-custom fw-bold">{{ speaker.company }}</small></p>
+                            {% endif %}
+                            
+                            <p class="card-text">{{ speaker.bio|truncatewords:30 }}</p>
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="social-links">
+                                    {% if speaker.linkedin_url %}
+                                        <a href="{{ speaker.linkedin_url }}" target="_blank" 
+                                           class="text-primary-custom me-3" title="LinkedIn">
+                                            <i class="fab fa-linkedin fa-lg"></i>
+                                        </a>
+                                    {% endif %}
+                                    {% if speaker.twitter_url %}
+                                        <a href="{{ speaker.twitter_url }}" target="_blank" 
+                                           class="text-primary-custom" title="Twitter">
+                                            <i class="fab fa-twitter fa-lg"></i>
+                                        </a>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Bio Modal Trigger -->
+                                <button type="button" class="btn btn-outline-primary btn-sm" 
+                                        data-mdb-toggle="modal" data-mdb-target="#speakerModal{{ speaker.id }}">
+                                    <i class="fas fa-info-circle me-1"></i>Full Bio
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Speaker Bio Modal -->
+                <div class="modal fade" id="speakerModal{{ speaker.id }}" tabindex="-1" 
+                     aria-labelledby="speakerModalLabel{{ speaker.id }}" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title text-primary-custom" id="speakerModalLabel{{ speaker.id }}">
+                                    {{ speaker.name }}
+                                </h5>
+                                <button type="button" class="btn-close" data-mdb-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    {% if speaker.photo %}
+                                    <div class="col-md-4 mb-3">
+                                        <img src="{{ speaker.photo.url }}" class="img-fluid rounded" alt="{{ speaker.name }}">
+                                    </div>
+                                    {% endif %}
+                                    <div class="col-md-8">
+                                        <h6 class="text-muted mb-2">{{ speaker.title }}</h6>
+                                        {% if speaker.company %}
+                                            <p class="text-primary-custom fw-bold mb-3">{{ speaker.company }}</p>
+                                        {% endif %}
+                                        <p>{{ speaker.bio|linebreaks }}</p>
+                                        
+                                        {% if speaker.linkedin_url or speaker.twitter_url %}
+                                            <div class="mt-4">
+                                                <h6>Connect with {{ speaker.name }}:</h6>
+                                                {% if speaker.linkedin_url %}
+                                                    <a href="{{ speaker.linkedin_url }}" target="_blank" 
+                                                       class="btn btn-outline-primary btn-sm me-2">
+                                                        <i class="fab fa-linkedin me-1"></i>LinkedIn
+                                                    </a>
+                                                {% endif %}
+                                                {% if speaker.twitter_url %}
+                                                    <a href="{{ speaker.twitter_url }}" target="_blank" 
+                                                       class="btn btn-outline-primary btn-sm">
+                                                        <i class="fab fa-twitter me-1"></i>Twitter
+                                                    </a>
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-users fa-4x text-muted mb-4"></i>
+                <h3 class="text-muted">Speakers Coming Soon</h3>
+                <p class="lead text-muted">
+                    We're working on confirming our amazing lineup of speakers. 
+                    Check back soon for updates!
+                </p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="section-padding bg-primary-custom text-white">
+    <div class="container text-center">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="mb-4">Interested in Speaking?</h2>
+                <p class="lead mb-4">
+                    We're always looking for industry experts to share their knowledge 
+                    and insights with our audience.
+                </p>
+                <a href="mailto:speakers@tlngsummit.com" class="btn btn-light btn-lg">
+                    <i class="fas fa-envelope me-2"></i>Contact Us
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.speaker-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.speaker-card img {
+    transition: transform 0.3s ease;
+}
+
+.speaker-card:hover img {
+    transform: scale(1.05);
+}
+
+.social-links a {
+    transition: all 0.3s ease;
+}
+
+.social-links a:hover {
+    transform: translateY(-2px);
+}
+</style>
+{% endblock %}

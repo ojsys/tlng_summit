@@ -1,0 +1,368 @@
+{% extends 'summit/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Sponsorship & Exhibition - Nigeria Transport and Logistics Summit{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section" style="min-height: 60vh;">
+    <div class="container hero-content">
+        <div class="row">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-4">Partner With Us</h1>
+                <p class="lead">
+                    Join Nigeria's premier transport and logistics event as a sponsor or exhibitor. 
+                    Connect with industry leaders, showcase your solutions, and build lasting partnerships.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Sponsorship Levels -->
+{% if sponsorship_levels %}
+<section class="section-padding">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="text-primary-custom">Sponsorship Packages</h2>
+            <p class="lead">Choose the sponsorship level that best fits your goals</p>
+        </div>
+        
+        <div class="row justify-content-center">
+            {% for level in sponsorship_levels %}
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card card-hover h-100 border-0 shadow-sm {% if level.name == 'platinum' %}sponsor-platinum{% elif level.name == 'gold' %}sponsor-gold{% elif level.name == 'silver' %}sponsor-silver{% elif level.name == 'bronze' %}sponsor-bronze{% endif %}">
+                    <div class="card-header text-center border-0 {% if level.name == 'platinum' %}bg-warning text-dark{% elif level.name == 'gold' %}bg-warning text-dark{% elif level.name == 'silver' %}bg-secondary text-white{% elif level.name == 'bronze' %}bg-primary-custom text-white{% else %}bg-primary-custom text-white{% endif %}">
+                        <h5 class="card-title mb-0 fw-bold">{{ level.get_name_display }}</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="mb-4">
+                            <h2 class="text-primary-custom">₦{{ level.price|floatformat:0|intcomma }}</h2>
+                            <p class="text-muted">Maximum {{ level.max_sponsors }} sponsors</p>
+                        </div>
+                        
+                        <div class="text-start">
+                            <h6 class="mb-3">Package Benefits:</h6>
+                            <div class="benefits-list">
+                                {{ level.benefits|linebreaks }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="mailto:partnerships@tlngsummit.com?subject=Sponsorship Inquiry - {{ level.get_name_display }}" 
+                           class="btn btn-primary btn-lg w-100">
+                            <i class="fas fa-handshake me-2"></i>Get Started
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Exhibition Packages -->
+{% if exhibition_packages %}
+<section class="section-padding bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="text-primary-custom">Exhibition Opportunities</h2>
+            <p class="lead">Showcase your products and services to industry professionals</p>
+        </div>
+        
+        <div class="row justify-content-center">
+            {% for package in exhibition_packages %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card exhibition-card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <i class="fas fa-store fa-3x text-primary-custom"></i>
+                        </div>
+                        <h5 class="card-title text-primary-custom">{{ package.get_name_display }}</h5>
+                        <p class="text-muted mb-3">{{ package.space_size }}</p>
+                        <h4 class="text-primary-custom mb-4">₦{{ package.price|floatformat:0|intcomma }}</h4>
+                        
+                        <div class="text-start">
+                            <h6 class="mb-3">Includes:</h6>
+                            <div class="features-list">
+                                {{ package.features|linebreaks }}
+                            </div>
+                        </div>
+                        
+                        <p class="text-muted mt-3">
+                            <small>Available slots: {{ package.max_exhibitors }}</small>
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="mailto:exhibition@tlngsummit.com?subject=Exhibition Inquiry - {{ package.get_name_display }}" 
+                           class="btn btn-outline-primary w-100">
+                            <i class="fas fa-envelope me-2"></i>Book Booth
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Benefits Section -->
+<section class="section-padding">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="text-primary-custom">Why Partner With Us?</h2>
+            <p class="lead">Discover the value of partnering with Nigeria's premier transport event</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card card-hover h-100 text-center">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="fas fa-users fa-3x text-primary-custom"></i>
+                        </div>
+                        <h5 class="card-title">Targeted Audience</h5>
+                        <p class="card-text">
+                            Connect with 500+ industry professionals, decision-makers, and 
+                            key stakeholders in Nigeria's transport sector.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card card-hover h-100 text-center">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="fas fa-chart-line fa-3x text-primary-custom"></i>
+                        </div>
+                        <h5 class="card-title">Brand Visibility</h5>
+                        <p class="card-text">
+                            Enhance your brand presence through prominent logo placement, 
+                            speaking opportunities, and media coverage.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card card-hover h-100 text-center">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="fas fa-handshake fa-3x text-primary-custom"></i>
+                        </div>
+                        <h5 class="card-title">Business Opportunities</h5>
+                        <p class="card-text">
+                            Generate leads, build partnerships, and explore new business 
+                            opportunities in the growing logistics market.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card card-hover h-100 text-center">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="fas fa-globe-africa fa-3x text-primary-custom"></i>
+                        </div>
+                        <h5 class="card-title">Market Leadership</h5>
+                        <p class="card-text">
+                            Position your company as a market leader and innovator in 
+                            Nigeria's transport and logistics industry.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card card-hover h-100 text-center">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="fas fa-camera fa-3x text-primary-custom"></i>
+                        </div>
+                        <h5 class="card-title">Media Coverage</h5>
+                        <p class="card-text">
+                            Benefit from extensive media coverage across print, digital, 
+                            and broadcast platforms throughout Nigeria.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card card-hover h-100 text-center">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="fas fa-network-wired fa-3x text-primary-custom"></i>
+                        </div>
+                        <h5 class="card-title">Networking</h5>
+                        <p class="card-text">
+                            Access exclusive networking sessions, VIP events, and 
+                            one-on-one meetings with industry leaders.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section class="section-padding bg-primary-custom text-white">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2>Ready to Partner With Us?</h2>
+            <p class="lead">
+                Let's discuss how we can create a customized partnership that meets your objectives
+            </p>
+        </div>
+        
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="text-center">
+                            <div class="mb-3">
+                                <i class="fas fa-handshake fa-3x"></i>
+                            </div>
+                            <h5>Sponsorship Inquiries</h5>
+                            <p class="mb-3">
+                                Explore our sponsorship packages and find the perfect fit for your brand.
+                            </p>
+                            <a href="mailto:partnerships@tlngsummit.com" class="btn btn-light btn-lg">
+                                <i class="fas fa-envelope me-2"></i>Contact Partnerships Team
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-4">
+                        <div class="text-center">
+                            <div class="mb-3">
+                                <i class="fas fa-store fa-3x"></i>
+                            </div>
+                            <h5>Exhibition Bookings</h5>
+                            <p class="mb-3">
+                                Secure your booth space and showcase your solutions to industry professionals.
+                            </p>
+                            <a href="mailto:exhibition@tlngsummit.com" class="btn btn-light btn-lg">
+                                <i class="fas fa-envelope me-2"></i>Book Exhibition Space
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <p class="lead">
+                        <i class="fas fa-phone me-2"></i>+234 xxx xxx xxxx
+                    </p>
+                    <p>
+                        Our partnerships team is available to discuss custom packages 
+                        tailored to your specific needs and objectives.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.card-hover:hover {
+    transform: translateY(-5px);
+}
+
+.list-unstyled li {
+    padding: 0.25rem 0;
+}
+
+.benefits-list p, .features-list p {
+    margin-bottom: 0.5rem;
+    position: relative;
+    padding-left: 1.5rem;
+    line-height: 1.6;
+    color: #495057;
+}
+
+.benefits-list p:before, .features-list p:before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #28a745;
+    font-weight: bold;
+    font-size: 1.2rem;
+    top: 0;
+}
+
+.benefits-list p:empty, .features-list p:empty {
+    display: none;
+}
+
+/* Ensure all non-empty paragraphs get the checkmark */
+.benefits-list p:not(:empty), .features-list p:not(:empty) {
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.benefits-list p:not(:empty):before, .features-list p:not(:empty):before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #28a745;
+    font-weight: bold;
+    font-size: 1.2rem;
+    top: 0;
+}
+
+.sponsor-platinum {
+    border-left: 4px solid #ffc107 !important;
+    position: relative;
+}
+
+.sponsor-platinum::before {
+    content: "Most Popular";
+    position: absolute;
+    top: -10px;
+    right: 15px;
+    background: #ffc107;
+    color: #000;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.sponsor-gold {
+    border-left: 4px solid #ffc107 !important;
+}
+
+.sponsor-silver {
+    border-left: 4px solid #6c757d !important;
+}
+
+.sponsor-bronze {
+    border-left: 4px solid #008751 !important;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.card-footer {
+    background: transparent;
+    border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+.exhibition-card {
+    transition: all 0.3s ease;
+}
+
+.exhibition-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+</style>
+{% endblock %}

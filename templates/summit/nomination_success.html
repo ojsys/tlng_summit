@@ -1,0 +1,77 @@
+{% extends 'summit/base.html' %}
+{% load static %}
+
+{% block title %}Nomination Submitted - Nigeria Transport and Logistics Summit{% endblock %}
+
+{% block content %}
+<section class="section-padding">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <div class="mb-5">
+                    <i class="fas fa-check-circle fa-5x text-success mb-4"></i>
+                    <h1 class="display-4 text-primary-custom mb-4">Thank You!</h1>
+                    <p class="lead mb-4">
+                        Your nomination has been submitted successfully and is now under review.
+                    </p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">What Happens Next?</h5>
+                        
+                        <div class="row">
+                            <div class="col-md-4 mb-4">
+                                <div class="text-center">
+                                    <div class="mb-3">
+                                        <i class="fas fa-search fa-2x text-primary-custom"></i>
+                                    </div>
+                                    <h6>Review Process</h6>
+                                    <p class="text-muted small">
+                                        Our expert judging panel will carefully review your nomination
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4 mb-4">
+                                <div class="text-center">
+                                    <div class="mb-3">
+                                        <i class="fas fa-envelope fa-2x text-primary-custom"></i>
+                                    </div>
+                                    <h6>Follow-up</h6>
+                                    <p class="text-muted small">
+                                        We may contact you if we need additional information
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4 mb-4">
+                                <div class="text-center">
+                                    <div class="mb-3">
+                                        <i class="fas fa-trophy fa-2x text-primary-custom"></i>
+                                    </div>
+                                    <h6>Awards Ceremony</h6>
+                                    <p class="text-muted small">
+                                        Winners will be announced at the summit
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-5">
+                    <div class="d-flex flex-wrap justify-content-center gap-3">
+                        <a href="{% url 'home' %}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-home me-2"></i>Back to Home
+                        </a>
+                        <a href="{% url 'nominations' %}" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-plus me-2"></i>Submit Another Nomination
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
