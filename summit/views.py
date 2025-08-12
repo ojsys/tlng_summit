@@ -12,7 +12,7 @@ from .forms import NominationForm
 def home(request):
     site_settings = SiteSettings.objects.first()
     event_content = EventContent.objects.first()
-    featured_speakers = Speaker.objects.filter(is_featured=True)[:6]
+    featured_speakers = Speaker.objects.all()  # Show all speakers on home page
     sponsors = Sponsor.objects.filter(is_active=True)
     
     context = {
