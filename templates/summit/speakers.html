@@ -82,50 +82,85 @@
                 <!-- Speaker Bio Modal -->
                 <div class="modal fade" id="speakerModal{{ speaker.id }}" tabindex="-1" 
                      aria-labelledby="speakerModalLabel{{ speaker.id }}" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title text-primary-custom" id="speakerModalLabel{{ speaker.id }}">
-                                    {{ speaker.name }}
-                                </h5>
-                                <button type="button" class="btn-close" data-mdb-dismiss="modal"></button>
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content border-0 shadow-lg">
+                            <div class="modal-header bg-primary-custom text-white">
+                                <div class="d-flex align-items-center">
+                                    {% if speaker.photo %}
+                                        <img src="{{ speaker.photo.url }}" class="rounded-circle me-3" 
+                                             style="width: 50px; height: 50px; object-fit: cover;" alt="{{ speaker.name }}">
+                                    {% else %}
+                                        <div class="rounded-circle bg-white text-primary-custom me-3 d-flex align-items-center justify-content-center" 
+                                             style="width: 50px; height: 50px;">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                    {% endif %}
+                                    <div>
+                                        <h5 class="modal-title mb-0" id="speakerModalLabel{{ speaker.id }}">
+                                            {{ speaker.name }}
+                                        </h5>
+                                        <small class="opacity-75">{{ speaker.title }}</small>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn-close btn-close-white" data-mdb-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <div class="modal-body">
+                            <div class="modal-body p-4">
                                 <div class="row">
                                     {% if speaker.photo %}
-                                    <div class="col-md-4 mb-3">
-                                        <img src="{{ speaker.photo.url }}" class="img-fluid rounded" alt="{{ speaker.name }}">
-                                    </div>
-                                    {% endif %}
-                                    <div class="col-md-8">
-                                        <h6 class="text-muted mb-2">{{ speaker.title }}</h6>
+                                    <div class="col-md-4 mb-4">
+                                        <img src="{{ speaker.photo.url }}" class="img-fluid rounded shadow-sm" alt="{{ speaker.name }}">
                                         {% if speaker.company %}
-                                            <p class="text-primary-custom fw-bold mb-3">{{ speaker.company }}</p>
+                                            <div class="text-center mt-3">
+                                                <span class="badge bg-primary-custom fs-6 px-3 py-2">{{ speaker.company }}</span>
+                                            </div>
                                         {% endif %}
-                                        <p>{{ speaker.bio|linebreaks }}</p>
+                                    </div>
+                                    <div class="col-md-8">
+                                    {% else %}
+                                    <div class="col-12">
+                                        {% if speaker.company %}
+                                            <div class="mb-3">
+                                                <span class="badge bg-primary-custom fs-6 px-3 py-2">{{ speaker.company }}</span>
+                                            </div>
+                                        {% endif %}
+                                    {% endif %}
+                                        <div class="bio-content">
+                                            <h6 class="text-primary-custom mb-3">
+                                                <i class="fas fa-user-tie me-2"></i>Biography
+                                            </h6>
+                                            <div class="text-muted lh-lg">
+                                                {{ speaker.bio|linebreaks }}
+                                            </div>
+                                        </div>
                                         
                                         {% if speaker.linkedin_url or speaker.twitter_url %}
-                                            <div class="mt-4">
-                                                <h6>Connect with {{ speaker.name }}:</h6>
-                                                {% if speaker.linkedin_url %}
-                                                    <a href="{{ speaker.linkedin_url }}" target="_blank" 
-                                                       class="btn btn-outline-primary btn-sm me-2">
-                                                        <i class="fab fa-linkedin me-1"></i>LinkedIn
-                                                    </a>
-                                                {% endif %}
-                                                {% if speaker.twitter_url %}
-                                                    <a href="{{ speaker.twitter_url }}" target="_blank" 
-                                                       class="btn btn-outline-primary btn-sm">
-                                                        <i class="fab fa-twitter me-1"></i>Twitter
-                                                    </a>
-                                                {% endif %}
+                                            <div class="mt-4 pt-3 border-top">
+                                                <h6 class="text-primary-custom mb-3">
+                                                    <i class="fas fa-share-alt me-2"></i>Connect with {{ speaker.name }}
+                                                </h6>
+                                                <div class="d-flex gap-2">
+                                                    {% if speaker.linkedin_url %}
+                                                        <a href="{{ speaker.linkedin_url }}" target="_blank" 
+                                                           class="btn btn-outline-primary btn-sm">
+                                                            <i class="fab fa-linkedin me-1"></i>LinkedIn Profile
+                                                        </a>
+                                                    {% endif %}
+                                                    {% if speaker.twitter_url %}
+                                                        <a href="{{ speaker.twitter_url }}" target="_blank" 
+                                                           class="btn btn-outline-info btn-sm">
+                                                            <i class="fab fa-twitter me-1"></i>Follow on Twitter
+                                                        </a>
+                                                    {% endif %}
+                                                </div>
                                             </div>
                                         {% endif %}
                                     </div>
                                 </div>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
+                            <div class="modal-footer bg-light border-0">
+                                <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">
+                                    <i class="fas fa-times me-2"></i>Close
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -167,10 +202,16 @@
 .speaker-card {
     position: relative;
     overflow: hidden;
+    transition: all 0.3s ease;
 }
 
 .speaker-card img {
     transition: transform 0.3s ease;
+}
+
+.speaker-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 135, 81, 0.15);
 }
 
 .speaker-card:hover img {
@@ -184,5 +225,112 @@
 .social-links a:hover {
     transform: translateY(-2px);
 }
+
+/* Modal Enhancements */
+.modal-content {
+    border-radius: 15px;
+}
+
+.modal-header {
+    border-radius: 15px 15px 0 0;
+}
+
+.bio-content {
+    font-size: 0.95rem;
+    line-height: 1.7;
+}
+
+.modal-dialog-centered {
+    min-height: calc(100vh - 60px);
+}
+
+@media (max-width: 768px) {
+    .modal-dialog {
+        margin: 10px;
+    }
+    
+    .modal-header img,
+    .modal-header .rounded-circle {
+        width: 40px !important;
+        height: 40px !important;
+    }
+}
+
+/* Animation for modal entrance */
+.modal.fade .modal-dialog {
+    transform: translate(0, -50px);
+}
+
+.modal.show .modal-dialog {
+    transform: translate(0, 0);
+}
 </style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Fallback JavaScript for modal functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Get all modal trigger buttons
+    const modalTriggers = document.querySelectorAll('[data-mdb-toggle="modal"]');
+    
+    modalTriggers.forEach(function(trigger) {
+        trigger.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-mdb-target');
+            const modal = document.querySelector(targetId);
+            
+            if (modal) {
+                // Try MDB modal first
+                if (typeof mdb !== 'undefined' && mdb.Modal) {
+                    const modalInstance = new mdb.Modal(modal);
+                    modalInstance.show();
+                } else {
+                    // Fallback to basic show/hide
+                    modal.style.display = 'block';
+                    modal.classList.add('show');
+                    document.body.classList.add('modal-open');
+                    
+                    // Add backdrop
+                    const backdrop = document.createElement('div');
+                    backdrop.className = 'modal-backdrop fade show';
+                    document.body.appendChild(backdrop);
+                }
+            }
+        });
+    });
+    
+    // Handle modal close buttons
+    const closeButtons = document.querySelectorAll('[data-mdb-dismiss="modal"]');
+    closeButtons.forEach(function(closeBtn) {
+        closeBtn.addEventListener('click', function() {
+            const modal = this.closest('.modal');
+            if (modal) {
+                modal.style.display = 'none';
+                modal.classList.remove('show');
+                document.body.classList.remove('modal-open');
+                
+                // Remove backdrop
+                const backdrop = document.querySelector('.modal-backdrop');
+                if (backdrop) {
+                    backdrop.remove();
+                }
+            }
+        });
+    });
+    
+    // Close modal when clicking outside
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('modal')) {
+            e.target.style.display = 'none';
+            e.target.classList.remove('show');
+            document.body.classList.remove('modal-open');
+            
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) {
+                backdrop.remove();
+            }
+        }
+    });
+});
+</script>
 {% endblock %}
