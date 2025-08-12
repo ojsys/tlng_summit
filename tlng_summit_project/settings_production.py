@@ -48,7 +48,7 @@ CSRF_COOKIE_SECURE = True
 
 # Static files settings for production
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'public_html/static')
+STATIC_ROOT = '/home/transpor/public_html/static'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
