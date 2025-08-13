@@ -55,7 +55,7 @@ STATICFILES_DIRS = [
 
 # Media files settings for production
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'public_html/media')
+MEDIA_ROOT = '/home/transpor/public_html/media'
 
 # Email settings (update with your email provider)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
