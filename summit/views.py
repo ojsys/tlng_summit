@@ -4,22 +4,27 @@ from django.core.mail import send_mail
 from django.conf import settings
 from .models import (
     SiteSettings, EventContent, Speaker, SponsorshipLevel, Sponsor,
-    AwardCategory, Nomination, ExhibitionPackage, Exhibitor
+    AwardCategory, Nomination, ExhibitionPackage, Exhibitor,
+    AboutSectionContent, SummitOrganizer, ConferenceRegistration
 )
-from .forms import NominationForm
+from .forms import NominationForm, ConferenceRegistrationForm
 
 
 def home(request):
     site_settings = SiteSettings.objects.first()
     event_content = EventContent.objects.first()
+    about_section_content = AboutSectionContent.objects.first()
     featured_speakers = Speaker.objects.all()  # Show all speakers on home page
     sponsors = Sponsor.objects.filter(is_active=True)
+    summit_organizers = SummitOrganizer.objects.filter(is_active=True)
     
     context = {
         'site_settings': site_settings,
         'event_content': event_content,
+        'about_section_content': about_section_content,
         'featured_speakers': featured_speakers,
         'sponsors': sponsors,
+        'summit_organizers': summit_organizers,
     }
     return render(request, 'summit/home.html', context)
 
@@ -63,3 +68,23 @@ def nominations(request):
 
 def nomination_success(request):
     return render(request, 'summit/nomination_success.html')
+
+
+def registration(request):
+    if request.method == 'POST':
+        form = ConferenceRegistrationForm(request.POST)
+        if form.is_valid():
+            registration = form.save()
+            messages.success(request, 'Your registration has been submitted successfully! We will contact you with further details.')
+            return redirect('registration_success')
+    else:
+        form = ConferenceRegistrationForm()
+    
+    context = {
+        'form': form,
+    }
+    return render(request, 'summit/registration.html', context)
+
+
+def registration_success(request):
+    return render(request, 'summit/registration_success.html')

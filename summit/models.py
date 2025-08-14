@@ -166,6 +166,85 @@ class Nomination(models.Model):
         return f"{self.nominee_name} - {self.category.name}"
 
 
+class AboutSectionContent(models.Model):
+    about_image = models.ImageField(upload_to='about_section/', blank=True, null=True, help_text="Image for the about section after hero")
+    image_alt_text = models.CharField(max_length=200, default="Transport and Logistics", help_text="Alt text for the about section image")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "About Section Content"
+        verbose_name_plural = "About Section Content"
+
+    def __str__(self):
+        return "About Section Content"
+
+    def save(self, *args, **kwargs):
+        if not self.pk and AboutSectionContent.objects.exists():
+            raise ValidationError('There can be only one AboutSectionContent instance')
+        return super(AboutSectionContent, self).save(*args, **kwargs)
+
+
+class SummitOrganizer(models.Model):
+    name = models.CharField(max_length=200)
+    logo = models.ImageField(upload_to='organizers/')
+    website = models.URLField(blank=True)
+    description = models.TextField(blank=True, help_text="Brief description of the organization")
+    order = models.PositiveIntegerField(default=0, help_text="Display order")
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['order', 'name']
+        verbose_name = "Summit Organizer"
+        verbose_name_plural = "Summit Organizers"
+
+    def __str__(self):
+        return self.name
+
+
+class ConferenceRegistration(models.Model):
+    ATTENDEE_TYPES = [
+        ('individual', 'Individual'),
+        ('corporate', 'Corporate'),
+        ('student', 'Student'),
+        ('media', 'Media'),
+    ]
+    
+    TICKET_TYPES = [
+        ('regular', 'Regular Ticket'),
+        ('vip', 'VIP Ticket'),
+        ('exhibitor', 'Exhibitor Pass'),
+    ]
+
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    email = models.EmailField()
+    phone = models.CharField(max_length=20)
+    company = models.CharField(max_length=200, blank=True)
+    job_title = models.CharField(max_length=200, blank=True)
+    attendee_type = models.CharField(max_length=20, choices=ATTENDEE_TYPES, default='individual')
+    ticket_type = models.CharField(max_length=20, choices=TICKET_TYPES, default='regular')
+    dietary_requirements = models.TextField(blank=True, help_text="Any special dietary requirements")
+    special_needs = models.TextField(blank=True, help_text="Any accessibility requirements")
+    how_did_you_hear = models.CharField(max_length=200, blank=True, help_text="How did you hear about this event?")
+    registration_date = models.DateTimeField(auto_now_add=True)
+    is_confirmed = models.BooleanField(default=False)
+    payment_status = models.CharField(max_length=20, default='pending', choices=[
+        ('pending', 'Pending'),
+        ('paid', 'Paid'),
+        ('failed', 'Failed'),
+    ])
+
+    class Meta:
+        ordering = ['-registration_date']
+        verbose_name = "Conference Registration"
+        verbose_name_plural = "Conference Registrations"
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} - {self.email}"
+
+
 class ExhibitionPackage(models.Model):
     PACKAGE_TYPES = [
         ('standard', 'Standard Booth'),

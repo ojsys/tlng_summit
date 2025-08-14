@@ -1,7 +1,8 @@
 from django.contrib import admin
 from .models import (
     SiteSettings, EventContent, Speaker, SponsorshipLevel, Sponsor,
-    AwardCategory, Nomination, ExhibitionPackage, Exhibitor
+    AwardCategory, Nomination, ExhibitionPackage, Exhibitor,
+    AboutSectionContent, SummitOrganizer, ConferenceRegistration
 )
 
 
@@ -143,6 +144,55 @@ class NominationAdmin(admin.ModelAdmin):
 class ExhibitionPackageAdmin(admin.ModelAdmin):
     list_display = ('name', 'price', 'space_size', 'max_exhibitors', 'order')
     ordering = ('order',)
+
+
+@admin.register(AboutSectionContent)
+class AboutSectionContentAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'updated_at')
+    fields = ('about_image', 'image_alt_text')
+    
+    def has_add_permission(self, request):
+        return not AboutSectionContent.objects.exists()
+    
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(SummitOrganizer)
+class SummitOrganizerAdmin(admin.ModelAdmin):
+    list_display = ('name', 'order', 'is_active', 'created_at')
+    list_filter = ('is_active',)
+    search_fields = ('name',)
+    ordering = ('order', 'name')
+    fields = ('name', 'logo', 'website', 'description', 'order', 'is_active')
+
+
+@admin.register(ConferenceRegistration)
+class ConferenceRegistrationAdmin(admin.ModelAdmin):
+    list_display = ('full_name', 'email', 'company', 'ticket_type', 'payment_status', 'registration_date')
+    list_filter = ('attendee_type', 'ticket_type', 'payment_status', 'is_confirmed')
+    search_fields = ('first_name', 'last_name', 'email', 'company')
+    readonly_fields = ('registration_date',)
+    ordering = ('-registration_date',)
+    
+    fieldsets = (
+        ('Personal Information', {
+            'fields': ('first_name', 'last_name', 'email', 'phone')
+        }),
+        ('Professional Information', {
+            'fields': ('company', 'job_title', 'attendee_type')
+        }),
+        ('Registration Details', {
+            'fields': ('ticket_type', 'dietary_requirements', 'special_needs', 'how_did_you_hear')
+        }),
+        ('Status', {
+            'fields': ('is_confirmed', 'payment_status', 'registration_date')
+        }),
+    )
+    
+    def full_name(self, obj):
+        return f"{obj.first_name} {obj.last_name}"
+    full_name.short_description = 'Full Name'
 
 
 @admin.register(Exhibitor)

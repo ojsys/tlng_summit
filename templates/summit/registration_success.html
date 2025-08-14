@@ -1,0 +1,164 @@
+{% extends 'summit/base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="section-padding">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <div class="success-icon mb-4">
+                    <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+                </div>
+                
+                <h1 class="display-5 fw-bold text-primary-custom mb-4">Registration Successful!</h1>
+                
+                <div class="alert alert-success border-0 shadow-sm" role="alert">
+                    <h5 class="alert-heading">
+                        <i class="fas fa-thumbs-up me-2"></i>Thank you for registering!
+                    </h5>
+                    <p class="mb-0">
+                        Your registration for the Nigeria Transport and Logistics Summit and Awards has been submitted successfully.
+                    </p>
+                </div>
+
+                <div class="card border-0 shadow-lg mt-5">
+                    <div class="card-body p-5">
+                        <h3 class="mb-4">What happens next?</h3>
+                        
+                        <div class="row text-start">
+                            <div class="col-md-6 mb-4">
+                                <div class="d-flex">
+                                    <div class="me-3">
+                                        <i class="fas fa-envelope text-primary-custom fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h5>Confirmation Email</h5>
+                                        <p class="text-muted mb-0">
+                                            You will receive a confirmation email within 24 hours with event details.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-4">
+                                <div class="d-flex">
+                                    <div class="me-3">
+                                        <i class="fas fa-calendar-check text-primary-custom fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h5>Event Updates</h5>
+                                        <p class="text-muted mb-0">
+                                            We'll keep you informed about speakers, agenda, and logistics.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-4">
+                                <div class="d-flex">
+                                    <div class="me-3">
+                                        <i class="fas fa-credit-card text-primary-custom fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h5>Payment Information</h5>
+                                        <p class="text-muted mb-0">
+                                            If applicable, payment details will be included in your confirmation email.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-4">
+                                <div class="d-flex">
+                                    <div class="me-3">
+                                        <i class="fas fa-ticket-alt text-primary-custom fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h5>Event Access</h5>
+                                        <p class="text-muted mb-0">
+                                            Your digital ticket and venue information will follow closer to the event date.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-5">
+                    <div class="d-flex flex-wrap justify-content-center gap-3">
+                        <a href="{% url 'home' %}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-home me-2"></i>Back to Home
+                        </a>
+                        <a href="{% url 'speakers' %}" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-users me-2"></i>View Speakers
+                        </a>
+                        <a href="{% url 'sponsorship' %}" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-handshake me-2"></i>Sponsorship
+                        </a>
+                    </div>
+                </div>
+
+                <div class="mt-5 p-4 bg-light rounded">
+                    <h5 class="text-primary-custom mb-3">
+                        <i class="fas fa-info-circle me-2"></i>Need Help?
+                    </h5>
+                    <p class="text-muted mb-2">
+                        If you have any questions about your registration or the event, please contact us:
+                    </p>
+                    <p class="mb-0">
+                        <i class="fas fa-envelope me-2 text-primary-custom"></i>
+                        <a href="mailto:info@tlngsummit.com" class="text-decoration-none">info@tlngsummit.com</a>
+                        <span class="mx-3">|</span>
+                        <i class="fas fa-phone me-2 text-primary-custom"></i>
+                        <a href="tel:+234xxxxxxxxx" class="text-decoration-none">+234 xxx xxx xxxx</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.success-icon i {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.card {
+    border-radius: 15px;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    opacity: 0.9;
+}
+
+.btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+</style>
+{% endblock %}
