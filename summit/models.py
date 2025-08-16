@@ -5,7 +5,8 @@ from django.core.exceptions import ValidationError
 
 class SiteSettings(models.Model):
     site_name = models.CharField(max_length=200, default="Nigeria Transport and Logistics Summit and Awards")
-    site_logo = models.ImageField(upload_to='site_assets/', blank=True, null=True, help_text="Logo for navigation and footer")
+    primary_organizer_logo = models.ImageField(upload_to='site_assets/', blank=True, null=True, help_text="Primary organizer logo (appears first in navigation)")
+    site_logo = models.ImageField(upload_to='site_assets/', blank=True, null=True, help_text="Main summit logo (appears second in navigation)")
     favicon = models.ImageField(upload_to='site_assets/', blank=True, null=True, help_text="Favicon (.ico, .png)")
     hero_background_image = models.ImageField(upload_to='hero_images/', blank=True, null=True, help_text="Hero section background image")
     contact_email = models.EmailField(default="info@tlngsummit.com")

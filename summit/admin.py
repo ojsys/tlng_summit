@@ -11,7 +11,11 @@ class SiteSettingsAdmin(admin.ModelAdmin):
     list_display = ('site_name', 'contact_email', 'updated_at')
     fieldsets = (
         ('Site Information', {
-            'fields': ('site_name', 'site_logo', 'favicon')
+            'fields': ('site_name', 'favicon')
+        }),
+        ('Organizer Logos', {
+            'fields': ('primary_organizer_logo', 'site_logo'),
+            'description': 'Primary organizer logo appears first, summit logo appears second in navigation'
         }),
         ('Hero Section', {
             'fields': ('hero_background_image',)

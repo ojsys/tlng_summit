@@ -82,19 +82,78 @@
         .award-category-card {
             border-left: 4px solid #008751;
         }
+        
+        /* Logo styling */
+        .navbar-brand .organizer-logo,
+        .navbar-brand .summit-logo {
+            transition: transform 0.3s ease;
+            max-height: 40px;
+            width: auto;
+        }
+        
+        .navbar-brand .organizer-logo:hover,
+        .navbar-brand .summit-logo:hover {
+            transform: scale(1.05);
+        }
+        
+        .navbar-brand .site-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        /* Responsive logo adjustments */
+        @media (max-width: 768px) {
+            .navbar-brand .organizer-logo,
+            .navbar-brand .summit-logo {
+                height: 30px !important;
+            }
+            
+            .navbar-brand .site-name {
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .navbar-brand {
+                flex-direction: column;
+                align-items: flex-start !important;
+            }
+            
+            .navbar-brand .organizer-logo {
+                margin-bottom: 5px;
+                margin-right: 0;
+            }
+            
+            .navbar-brand .site-name {
+                font-size: 0.8rem;
+            }
+        }
     </style>
 </head>
 <body>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary-custom fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'home' %}">
-                {% if site_settings and site_settings.site_logo %}
-                    <img src="{{ site_settings.site_logo.url }}" alt="{{ site_settings.site_name }}" style="height: 40px;" class="me-2">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+                {% if site_settings %}
+                    <!-- Primary organizer logo (appears first) -->
+                    {% if site_settings.primary_organizer_logo %}
+                        <img src="{{ site_settings.primary_organizer_logo.url }}" alt="Primary Organizer" class="organizer-logo me-3" style="height: 40px;">
+                    {% endif %}
+                    
+                    <!-- Summit logo (appears second) -->
+                    {% if site_settings.site_logo %}
+                        <img src="{{ site_settings.site_logo.url }}" alt="{{ site_settings.site_name }}" class="summit-logo me-2" style="height: 40px;">
+                    {% else %}
+                        <i class="fas fa-truck me-2"></i>
+                    {% endif %}
+                    
+                    <!-- Site name -->
+                    <span class="site-name">{{ site_settings.site_name|truncatewords:6 }}</span>
                 {% else %}
                     <i class="fas fa-truck me-2"></i>
+                    <span class="site-name">TLNG Summit</span>
                 {% endif %}
-                {% if site_settings %}{{ site_settings.site_name|truncatewords:6 }}{% else %}TLNG Summit{% endif %}
             </a>
             
             <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" 
@@ -146,13 +205,25 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-4 mb-4">
-                    <h5 class="mb-3">
-                        {% if site_settings and site_settings.site_logo %}
-                            <img src="{{ site_settings.site_logo.url }}" alt="{{ site_settings.site_name }}" style="height: 30px;" class="me-2">
+                    <h5 class="mb-3 d-flex align-items-center flex-wrap">
+                        {% if site_settings %}
+                            <!-- Primary organizer logo -->
+                            {% if site_settings.primary_organizer_logo %}
+                                <img src="{{ site_settings.primary_organizer_logo.url }}" alt="Primary Organizer" style="height: 30px;" class="me-2 mb-1">
+                            {% endif %}
+                            
+                            <!-- Summit logo -->
+                            {% if site_settings.site_logo %}
+                                <img src="{{ site_settings.site_logo.url }}" alt="{{ site_settings.site_name }}" style="height: 30px;" class="me-2 mb-1">
+                            {% else %}
+                                <i class="fas fa-truck me-2"></i>
+                            {% endif %}
+                            
+                            <span>{{ site_settings.site_name|truncatewords:4 }}</span>
                         {% else %}
                             <i class="fas fa-truck me-2"></i>
+                            <span>TLNG Summit & Awards</span>
                         {% endif %}
-                        {% if site_settings %}{{ site_settings.site_name|truncatewords:4 }}{% else %}TLNG Summit & Awards{% endif %}
                     </h5>
                     <p class="mb-3">
                         Nigeria's premier transport and logistics industry event, 
