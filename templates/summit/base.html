@@ -117,31 +117,82 @@
             font-size: 1.1rem;
         }
         
-        /* Responsive logo adjustments */
+        /* Fixed navbar offset for content */
+        body {
+            padding-top: 70px;
+        }
+        
+        .hero-section {
+            margin-top: -70px;
+            padding-top: 70px;
+        }
+        
+        /* Mobile navbar improvements */
         @media (max-width: 768px) {
+            body {
+                padding-top: 80px;
+            }
+            
+            .hero-section {
+                margin-top: -80px;
+                padding-top: 80px;
+            }
+            
+            .navbar-brand {
+                display: flex !important;
+                align-items: center !important;
+                flex-wrap: nowrap !important;
+            }
+            
             .navbar-brand .organizer-logo,
             .navbar-brand .summit-logo {
-                height: 30px !important;
+                height: 35px !important;
+                margin-right: 8px !important;
+                flex-shrink: 0;
             }
             
             .navbar-brand .site-name {
                 font-size: 0.9rem;
+                line-height: 1.2;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            
+            .navbar-toggler {
+                border: none;
+                padding: 4px 8px;
+                margin-left: auto;
+            }
+            
+            .navbar-toggler:focus {
+                box-shadow: none;
             }
         }
         
         @media (max-width: 576px) {
-            .navbar-brand {
-                flex-direction: column;
-                align-items: flex-start !important;
+            body {
+                padding-top: 85px;
             }
             
-            .navbar-brand .organizer-logo {
-                margin-bottom: 5px;
-                margin-right: 0;
+            .hero-section {
+                margin-top: -85px;
+                padding-top: 85px;
+            }
+            
+            .navbar-brand {
+                max-width: calc(100% - 60px);
+            }
+            
+            .navbar-brand .organizer-logo,
+            .navbar-brand .summit-logo {
+                height: 30px !important;
+                margin-right: 6px !important;
             }
             
             .navbar-brand .site-name {
                 font-size: 0.8rem;
+                max-width: 200px;
             }
         }
     </style>
