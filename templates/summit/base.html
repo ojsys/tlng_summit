@@ -199,7 +199,7 @@
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary-custom fixed-top">
+    <nav class="navbar navbar-expand-md navbar-dark bg-primary-custom fixed-top">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
                 {% if site_settings %}
@@ -223,8 +223,10 @@
                 {% endif %}
             </a>
             
-            <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" 
-                    data-mdb-target="#navbarNav">
+            <button class="navbar-toggler" type="button" 
+                    data-mdb-toggle="collapse" data-mdb-target="#navbarNav"
+                    data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             
@@ -347,6 +349,39 @@
 
     <!-- Material Design Bootstrap JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.1.0/mdb.umd.min.js"></script>
+    
+    <!-- Initialize navbar toggle -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize MDB navbar toggle
+            const navbarToggler = document.querySelector('.navbar-toggler');
+            const navbarCollapse = document.querySelector('.navbar-collapse');
+            
+            if (navbarToggler && navbarCollapse) {
+                navbarToggler.addEventListener('click', function() {
+                    if (navbarCollapse.classList.contains('show')) {
+                        navbarCollapse.classList.remove('show');
+                        navbarToggler.setAttribute('aria-expanded', 'false');
+                    } else {
+                        navbarCollapse.classList.add('show');
+                        navbarToggler.setAttribute('aria-expanded', 'true');
+                    }
+                });
+                
+                // Close navbar when clicking on nav links (mobile UX)
+                const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+                navLinks.forEach(function(link) {
+                    link.addEventListener('click', function() {
+                        if (navbarCollapse.classList.contains('show')) {
+                            navbarCollapse.classList.remove('show');
+                            navbarToggler.setAttribute('aria-expanded', 'false');
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+    
     {% block extra_js %}{% endblock %}
 </body>
 </html>
