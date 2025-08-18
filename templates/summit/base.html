@@ -200,7 +200,7 @@
 <body>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-md navbar-dark bg-primary-custom fixed-top">
-        <div class="container">
+        <div class="container d-flex justify-content-between align-items-center">
             <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
                 {% if site_settings %}
                     <!-- Primary organizer logo (appears first) -->
@@ -223,15 +223,16 @@
                 {% endif %}
             </a>
             
-            <button class="navbar-toggler" type="button" 
-                    data-mdb-toggle="collapse" data-mdb-target="#navbarNav"
-                    data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-                <i class="fas fa-bars navbar-toggler-fallback" style="color: white; font-size: 18px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 5;"></i>
-            </button>
-            
-            <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="navbar-nav-wrapper d-flex flex-column align-items-end">
+                <button class="navbar-toggler" type="button" 
+                        data-mdb-toggle="collapse" data-mdb-target="#navbarNav"
+                        data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                    <i class="fas fa-bars navbar-toggler-fallback" style="color: white; font-size: 18px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 5;"></i>
+                </button>
+                
+                <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'home' %}">Home</a>
@@ -249,6 +250,7 @@
                         <a class="nav-link btn btn-outline-light ms-2 px-3" href="{% url 'registration' %}">Register</a>
                     </li>
                 </ul>
+                </div>
             </div>
         </div>
     </nav>
