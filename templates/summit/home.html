@@ -189,30 +189,39 @@
 </section>
 {% endif %}
 
-<!-- Gallery Teaser -->
+<!-- Gallery Collage -->
 {% if gallery_photos or request.user.is_staff %}
-<section class="section-padding bg-light">
+<section class="home-gallery-section">
     <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="display-5 fw-bold text-dark mb-3">{% cms_block "home.gallery.title" "Moments from Past Summits" %}</h2>
-            <p class="lead text-muted">{% cms_block "home.gallery.subtitle" "Highlights from our conferences, exhibitions and award nights" %}</p>
+        <div class="home-gallery-head">
+            <div>
+                <span class="section-eyebrow">{% cms_block "home.gallery.eyebrow" "Gallery" %}</span>
+                <h2 class="home-gallery-title">{% cms_block "home.gallery.title" "Moments from Past Summits" %}</h2>
+                <p class="home-gallery-sub">{% cms_block "home.gallery.subtitle" "Highlights from our conferences, exhibitions and award nights" %}</p>
+            </div>
+            <a href="{% url 'gallery' %}" class="home-gallery-all">{% cms_block "home.gallery.button" "View full gallery" %} <i class="fas fa-arrow-right ms-1"></i></a>
         </div>
+
         {% if gallery_photos %}
-        <div class="home-gallery">
+        <div class="{% if gallery_photos|length >= 7 %}bento{% else %}collage collage-compact{% endif %}">
             {% for photo in gallery_photos %}
-            <a href="{{ photo.image.url }}" data-lightbox="home" data-caption="{{ photo.caption|default:photo.album.title }}" class="home-gallery-item">
-                <img src="{{ photo.thumb_url }}" alt="{{ photo.caption|default:photo.album.title }}" loading="lazy">
-                <span class="home-gallery-label">{{ photo.album.title }}</span>
-            </a>
+                {% if forloop.last and gallery_total > gallery_photos|length %}
+                <a href="{% url 'gallery' %}" class="collage-tile bento-more">
+                    <img src="{{ photo.thumb_url }}" alt="" loading="lazy" decoding="async">
+                    <span class="bento-more-label">
+                        <strong>+{{ gallery_total|add:"-6" }}</strong>
+                        <span>more photos</span>
+                    </span>
+                </a>
+                {% else %}
+                    {% include "summit/includes/collage_tile.html" with group="home" tile="" %}
+                {% endif %}
             {% endfor %}
         </div>
         {% else %}
-        <p class="text-center text-muted">No photos yet. Create a gallery album to show photos here.</p>
+        <p class="text-center home-gallery-sub py-5">No photos yet. Create a gallery album to show photos here.</p>
         {% endif %}
-        <div class="text-center mt-5">
-            <a href="{% url 'gallery' %}" class="btn btn-primary btn-lg px-5"><i class="fas fa-images me-2"></i>{% cms_block "home.gallery.button" "View Full Gallery" %}</a>
-            <div class="cms-manage-row">{% cms_manage "summit.galleryalbum" "New album" action="add" %}</div>
-        </div>
+        <div class="cms-manage-row mt-3">{% cms_manage "summit.galleryalbum" "New album" action="add" %}{% cms_manage "summit.galleryalbum" "Manage albums" %}</div>
     </div>
 </section>
 {% endif %}

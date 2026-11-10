@@ -1,5 +1,5 @@
 {% extends 'summit/base.html' %}
-{% load static cms %}
+{% load static cms gallery %}
 
 {% block title %}Gallery - {{ site_settings.site_name }}{% endblock %}
 
@@ -10,27 +10,43 @@
             <div class="col-lg-8">
                 <h1 class="display-4 fw-bold mb-3">{% cms_block "gallery.hero.title" "Gallery" %}</h1>
                 <p class="lead mb-0">{% cms_block "gallery.hero.text" "Relive the conversations, connections and celebrations from every edition of the summit." multiline=True %}</p>
-                {% if total_photos %}<p class="mt-3 mb-0 opacity-75"><i class="fas fa-images me-2"></i>{{ total_photos }} photo{{ total_photos|pluralize }} from {{ years|length }} year{{ years|length|pluralize }}</p>{% endif %}
+                {% if photos %}<p class="mt-3 mb-0 opacity-75"><i class="fas fa-images me-2"></i>{{ photos|length }} photo{{ photos|length|pluralize }} · {{ albums|length }} event{{ albums|length|pluralize }}</p>{% endif %}
             </div>
         </div>
     </div>
 </section>
 
-<section class="section-padding">
+<section class="gallery-page">
     <div class="container">
-        <div class="cms-manage-row mb-4">{% cms_manage "summit.galleryalbum" "New album" action="add" %}{% cms_manage "summit.galleryalbum" "Manage albums" %}</div>
+        <div class="cms-manage-row mb-3">{% cms_manage "summit.galleryalbum" "New album" action="add" %}{% cms_manage "summit.galleryalbum" "Manage albums" %}</div>
 
-        {% if albums_by_year %}
-            {% if years|length > 1 %}
-            <nav class="gallery-filter mb-5" aria-label="Filter albums by year">
-                <button type="button" class="active" data-year="all">All years</button>
-                {% for year in years %}<button type="button" data-year="{{ year }}">{{ year }}</button>{% endfor %}
-            </nav>
+        {% if photos %}
+            {% if albums|length > 1 %}
+            <div class="gallery-toolbar">
+                <nav class="gallery-chips" aria-label="Filter photos by event">
+                    <button type="button" class="active" data-filter="all" aria-pressed="true">All photos <span>{{ photos|length }}</span></button>
+                    {% for album in albums %}{% if album.photo_count %}
+                    <button type="button" data-filter="{{ album.slug }}" aria-pressed="false">{{ album.title }} <span>{{ album.photo_count }}</span></button>
+                    {% endif %}{% endfor %}
+                </nav>
+            </div>
             {% endif %}
 
-            {% for year, albums in albums_by_year %}
-            <div class="gallery-year mb-5" data-year="{{ year }}">
-                <h2 class="gallery-year-title"><span>{{ year }}</span></h2>
+            <div class="collage" id="galleryCollage">
+                {% for photo in photos %}
+                    {% include "summit/includes/collage_tile.html" with group="gallery" tile=photo|tile_class:forloop.counter %}
+                {% endfor %}
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="button" class="btn btn-outline-primary btn-lg px-5" id="galleryMore" hidden>
+                    <i class="fas fa-plus me-2"></i>Show more photos
+                </button>
+            </div>
+
+            {% if albums|length > 1 %}
+            <div class="gallery-events">
+                <h2 class="h3 mb-4">{% cms_block "gallery.events.title" "Browse by event" %}</h2>
                 <div class="row g-4">
                     {% for album in albums %}
                     <div class="col-lg-4 col-md-6">
@@ -47,7 +63,7 @@
                             <div class="album-body">
                                 <h3 class="album-title">{{ album.title }}</h3>
                                 <div class="album-meta">
-                                    {% if album.event_date %}<span><i class="far fa-calendar me-1"></i>{{ album.event_date|date:"M j, Y" }}</span>{% endif %}
+                                    <span><i class="far fa-calendar me-1"></i>{% if album.event_date %}{{ album.event_date|date:"M j, Y" }}{% else %}{{ album.year }}{% endif %}</span>
                                     {% if album.location %}<span><i class="fas fa-map-marker-alt me-1"></i>{{ album.location }}</span>{% endif %}
                                 </div>
                             </div>
@@ -56,7 +72,7 @@
                     {% endfor %}
                 </div>
             </div>
-            {% endfor %}
+            {% endif %}
         {% else %}
             <div class="text-center py-5">
                 <i class="fas fa-images fa-4x text-muted mb-4"></i>
@@ -70,13 +86,40 @@
 
 {% block extra_js %}
 <script>
-document.querySelectorAll('.gallery-filter button').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-        document.querySelectorAll('.gallery-filter button').forEach(function (b) { b.classList.toggle('active', b === btn); });
-        document.querySelectorAll('.gallery-year').forEach(function (section) {
-            section.hidden = btn.dataset.year !== 'all' && section.dataset.year !== btn.dataset.year;
+(function () {
+    var collage = document.getElementById('galleryCollage');
+    if (!collage) return;
+    var tiles = Array.prototype.slice.call(collage.querySelectorAll('.collage-tile'));
+    var moreBtn = document.getElementById('galleryMore');
+    var PAGE = 30, limit = PAGE, filter = 'all';
+
+    function render() {
+        var shown = 0, matching = 0;
+        tiles.forEach(function (tile) {
+            var match = filter === 'all' || tile.dataset.album === filter;
+            tile.classList.toggle('is-filtered', !match);
+            if (match) matching++;
+            var visible = match && shown < limit;
+            if (visible) shown++;
+            tile.classList.toggle('is-more', match && !visible);
+        });
+        moreBtn.hidden = matching <= shown;
+        if (window.balanceCollages) window.balanceCollages();
+    }
+
+    document.querySelectorAll('.gallery-chips button').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            document.querySelectorAll('.gallery-chips button').forEach(function (b) {
+                b.classList.toggle('active', b === btn);
+                b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
+            });
+            filter = btn.dataset.filter;
+            limit = PAGE;
+            render();
         });
     });
-});
+    moreBtn.addEventListener('click', function () { limit += PAGE; render(); });
+    render();
+})();
 </script>
 {% endblock %}
