@@ -130,7 +130,7 @@ dmypy.json
 
 # Django specific
 media/
-static/
+staticfiles/
 public_html/
 logs/
 cache/

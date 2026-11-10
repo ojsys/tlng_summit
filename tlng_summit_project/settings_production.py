@@ -180,6 +180,7 @@ SESSION_COOKIE_AGE = 1209600  # 2 weeks
 
 # File upload settings
 FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10MB
+DATA_UPLOAD_MAX_NUMBER_FILES = 300  # bulk gallery uploads
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10MB
 
 # Generate a new secret key for production

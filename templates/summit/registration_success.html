@@ -1,164 +1,52 @@
 {% extends 'summit/base.html' %}
-{% load static %}
+{% load static cms %}
+
+{% block title %}Registration Confirmed - {{ site_settings.site_name }}{% endblock %}
 
 {% block content %}
-<section class="section-padding">
+<section class="section-padding" style="margin-top: 40px;">
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-lg-8 text-center">
-                <div class="success-icon mb-4">
-                    <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
-                </div>
-                
-                <h1 class="display-5 fw-bold text-primary-custom mb-4">Registration Successful!</h1>
-                
-                <div class="alert alert-success border-0 shadow-sm" role="alert">
-                    <h5 class="alert-heading">
-                        <i class="fas fa-thumbs-up me-2"></i>Thank you for registering!
-                    </h5>
-                    <p class="mb-0">
-                        Your registration for the Nigeria Transport and Logistics Summit and Awards has been submitted successfully.
-                    </p>
-                </div>
+            <div class="col-lg-7 text-center">
+                <div class="success-icon mb-4"><i class="fas fa-check"></i></div>
+                <h1 class="display-5 fw-bold text-primary-custom mb-3">{% cms_block "registration.success.title" "You're registered!" %}</h1>
+                <p class="lead text-muted mb-4">{% cms_block "registration.success.text" "Thank you for registering. We can't wait to see you at the summit." %}</p>
 
-                <div class="card border-0 shadow-lg mt-5">
-                    <div class="card-body p-5">
-                        <h3 class="mb-4">What happens next?</h3>
-                        
-                        <div class="row text-start">
-                            <div class="col-md-6 mb-4">
-                                <div class="d-flex">
-                                    <div class="me-3">
-                                        <i class="fas fa-envelope text-primary-custom fa-2x"></i>
-                                    </div>
-                                    <div>
-                                        <h5>Confirmation Email</h5>
-                                        <p class="text-muted mb-0">
-                                            You will receive a confirmation email within 24 hours with event details.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-6 mb-4">
-                                <div class="d-flex">
-                                    <div class="me-3">
-                                        <i class="fas fa-calendar-check text-primary-custom fa-2x"></i>
-                                    </div>
-                                    <div>
-                                        <h5>Event Updates</h5>
-                                        <p class="text-muted mb-0">
-                                            We'll keep you informed about speakers, agenda, and logistics.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-6 mb-4">
-                                <div class="d-flex">
-                                    <div class="me-3">
-                                        <i class="fas fa-credit-card text-primary-custom fa-2x"></i>
-                                    </div>
-                                    <div>
-                                        <h5>Payment Information</h5>
-                                        <p class="text-muted mb-0">
-                                            If applicable, payment details will be included in your confirmation email.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-6 mb-4">
-                                <div class="d-flex">
-                                    <div class="me-3">
-                                        <i class="fas fa-ticket-alt text-primary-custom fa-2x"></i>
-                                    </div>
-                                    <div>
-                                        <h5>Event Access</h5>
-                                        <p class="text-muted mb-0">
-                                            Your digital ticket and venue information will follow closer to the event date.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
+                {% if registration %}
+                <div class="card border-0 shadow-sm text-start mb-4">
+                    <div class="card-body p-4">
+                        <div class="reg-ref mb-3">
+                            <div class="small text-muted text-uppercase fw-semibold">Your registration reference</div>
+                            <div class="reg-ref-code">{{ registration.reference }}</div>
                         </div>
+                        <dl class="row mb-0 small">
+                            <dt class="col-4 text-muted fw-normal">Name</dt><dd class="col-8">{{ registration.full_name }}</dd>
+                            <dt class="col-4 text-muted fw-normal">Email</dt><dd class="col-8">{{ registration.email }}</dd>
+                            <dt class="col-4 text-muted fw-normal">Ticket</dt><dd class="col-8">{{ registration.ticket }}{% if registration.ticket and not registration.ticket.is_free %} ({{ registration.ticket.price|naira }}){% endif %}</dd>
+                            {% if event_content %}
+                            <dt class="col-4 text-muted fw-normal">Date</dt><dd class="col-8">{{ event_content.event_date|date:"l, F j, Y" }}</dd>
+                            <dt class="col-4 text-muted fw-normal">Venue</dt><dd class="col-8 mb-0">{{ event_content.venue }}</dd>
+                            {% endif %}
+                        </dl>
                     </div>
                 </div>
-
-                <div class="mt-5">
-                    <div class="d-flex flex-wrap justify-content-center gap-3">
-                        <a href="{% url 'home' %}" class="btn btn-primary btn-lg">
-                            <i class="fas fa-home me-2"></i>Back to Home
-                        </a>
-                        <a href="{% url 'speakers' %}" class="btn btn-outline-primary btn-lg">
-                            <i class="fas fa-users me-2"></i>View Speakers
-                        </a>
-                        <a href="{% url 'sponsorship' %}" class="btn btn-outline-primary btn-lg">
-                            <i class="fas fa-handshake me-2"></i>Sponsorship
-                        </a>
-                    </div>
+                <p class="text-muted small mb-4">
+                    <i class="fas fa-envelope me-1"></i>
+                    {% if site_settings.send_confirmation_emails %}A confirmation has been sent to <strong>{{ registration.email }}</strong>. {% endif %}{% cms_block "registration.success.keep_ref" "Please keep your reference number; you may be asked for it at the venue." %}
+                </p>
+                {% if registration.ticket and not registration.ticket.is_free %}
+                <div class="alert alert-info text-start">
+                    <i class="fas fa-info-circle me-2"></i>{% cms_block "registration.success.payment_note" "Our team will contact you shortly with payment details for your ticket." %}
                 </div>
+                {% endif %}
+                {% endif %}
 
-                <div class="mt-5 p-4 bg-light rounded">
-                    <h5 class="text-primary-custom mb-3">
-                        <i class="fas fa-info-circle me-2"></i>Need Help?
-                    </h5>
-                    <p class="text-muted mb-2">
-                        If you have any questions about your registration or the event, please contact us:
-                    </p>
-                    <p class="mb-0">
-                        <i class="fas fa-envelope me-2 text-primary-custom"></i>
-                        <a href="mailto:info@tlngsummit.com" class="text-decoration-none">info@tlngsummit.com</a>
-                        <span class="mx-3">|</span>
-                        <i class="fas fa-phone me-2 text-primary-custom"></i>
-                        <a href="tel:+234xxxxxxxxx" class="text-decoration-none">+234 xxx xxx xxxx</a>
-                    </p>
+                <div class="d-flex flex-wrap justify-content-center gap-3 mt-4">
+                    <a href="{% url 'home' %}" class="btn btn-primary btn-lg"><i class="fas fa-home me-2"></i>Back to Home</a>
+                    <a href="{% url 'nominations' %}" class="btn btn-outline-primary btn-lg"><i class="fas fa-award me-2"></i>Submit a Nomination</a>
                 </div>
             </div>
         </div>
     </div>
 </section>
-
-<style>
-.success-icon i {
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.1);
-    }
-    100% {
-        transform: scale(1);
-    }
-}
-
-.card {
-    border-radius: 15px;
-}
-
-.btn-primary {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-}
-
-.btn-primary:hover {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-    opacity: 0.9;
-}
-
-.btn-outline-primary {
-    color: var(--primary-color);
-    border-color: var(--primary-color);
-}
-
-.btn-outline-primary:hover {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-}
-</style>
 {% endblock %}

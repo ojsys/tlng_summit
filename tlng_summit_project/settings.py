@@ -36,7 +36,7 @@ ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost,s4055,s4055
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
+    'summit.admin_site.SummitAdminConfig',  # replaces django.contrib.admin (CMS dashboard)
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -241,6 +241,16 @@ LOGGING = {
         },
     }
 }
+
+# Uploads: allow selecting many gallery photos at once
+DATA_UPLOAD_MAX_NUMBER_FILES = 300
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024
+
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@transportandlogisticssummit.ng')
+
+# In development, print emails (e.g. registration confirmations) to the console
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Email configuration for error notifications (when DEBUG=False)
 if not DEBUG:

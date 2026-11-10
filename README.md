@@ -13,6 +13,38 @@ A comprehensive Django web application for managing the Nigeria Transport and Lo
 - **Exhibition Management**: Package management for exhibitors
 - **Media Management**: Image uploads for logos, backgrounds, and speaker photos
 
+## Content Management (for site admins)
+
+Log in at `/admin/`. The dashboard has quick actions, registration stats and a guide.
+
+**Edit the live site:** click **✏️ Edit site live** (or open any page while logged in and press
+**Edit page** in the toolbar at the bottom-left). Then:
+
+- Click any highlighted text to type over it. Press Enter (or click away) to save, Esc to cancel.
+- Click any picture (logos, speaker photos, about image) to replace it. Heroes have a
+  **Replace background** button.
+- Bulleted lists (e.g. nomination guidelines) are edited as one item per line.
+- Black "Manage…" buttons open the admin for lists (speakers, sponsors, cards, tickets…).
+
+**Gallery:** create one album per event under *Gallery › Gallery Albums*. Upload many photos at
+once from the album form, or on the album page in Edit mode (drag & drop, drag to reorder,
+click captions to edit). Photos are resized automatically (max 2400px plus an 800px thumbnail).
+
+**Registration:** manage tickets and prices under *Registration › Ticket Types* (set a capacity
+to cap numbers). Open or close registration and configure confirmation emails in *Site Settings*.
+Registrants receive a reference number (e.g. `TLNG-2026-7KQ2MX`). Export registrations or
+nominations to CSV with the admin action "Export selected to CSV".
+
+### For developers
+
+- Editable copy uses the template tags in `summit/templatetags/cms.py`:
+  `{% cms_block "page.section.key" "Default text" %}`, `{% cms_field obj "field" %}`,
+  `{% cms_list "key" "item 1 | item 2" %}`, `<img {% cms_image obj "field" %}>`.
+  New blocks are created automatically the first time a page renders.
+- Live-edit endpoints live in `summit/cms.py`. Only models listed in `EDITABLE_MODELS`,
+  text/image fields, and users with the model's *change* permission can edit.
+- Run tests with `python manage.py test summit`.
+
 ## Requirements
 
 - Python 3.11+

@@ -1,5 +1,5 @@
 {% extends 'summit/base.html' %}
-{% load static %}
+{% load static cms %}
 
 {% block title %}Nomination Submitted - Nigeria Transport and Logistics Summit{% endblock %}
 
@@ -10,15 +10,13 @@
             <div class="col-lg-8 text-center">
                 <div class="mb-5">
                     <i class="fas fa-check-circle fa-5x text-success mb-4"></i>
-                    <h1 class="display-4 text-primary-custom mb-4">Thank You!</h1>
-                    <p class="lead mb-4">
-                        Your nomination has been submitted successfully and is now under review.
-                    </p>
+                    <h1 class="display-4 text-primary-custom mb-4">{% cms_block "nominations.success.title" "Thank You!" %}</h1>
+                    <p class="lead mb-4">{% cms_block "nominations.success.text" "Your nomination has been submitted successfully and is now under review." %}</p>
                 </div>
                 
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title mb-4">What Happens Next?</h5>
+                        <h5 class="card-title mb-4">{% cms_block "nominations.success.next_title" "What Happens Next?" %}</h5>
                         
                         <div class="row">
                             <div class="col-md-4 mb-4">
@@ -26,10 +24,8 @@
                                     <div class="mb-3">
                                         <i class="fas fa-search fa-2x text-primary-custom"></i>
                                     </div>
-                                    <h6>Review Process</h6>
-                                    <p class="text-muted small">
-                                        Our expert judging panel will carefully review your nomination
-                                    </p>
+                                    <h6>{% cms_block "nominations.success.review_title" "Review Process" %}</h6>
+                                    <p class="text-muted small">{% cms_block "nominations.success.review_text" "Our expert judging panel will carefully review your nomination" %}</p>
                                 </div>
                             </div>
                             
@@ -38,10 +34,8 @@
                                     <div class="mb-3">
                                         <i class="fas fa-envelope fa-2x text-primary-custom"></i>
                                     </div>
-                                    <h6>Follow-up</h6>
-                                    <p class="text-muted small">
-                                        We may contact you if we need additional information
-                                    </p>
+                                    <h6>{% cms_block "nominations.success.followup_title" "Follow-up" %}</h6>
+                                    <p class="text-muted small">{% cms_block "nominations.success.followup_text" "We may contact you if we need additional information" %}</p>
                                 </div>
                             </div>
                             
@@ -50,10 +44,8 @@
                                     <div class="mb-3">
                                         <i class="fas fa-trophy fa-2x text-primary-custom"></i>
                                     </div>
-                                    <h6>Awards Ceremony</h6>
-                                    <p class="text-muted small">
-                                        Winners will be announced at the summit
-                                    </p>
+                                    <h6>{% cms_block "nominations.success.ceremony_title" "Awards Ceremony" %}</h6>
+                                    <p class="text-muted small">{% cms_block "nominations.success.ceremony_text" "Winners will be announced at the summit" %}</p>
                                 </div>
                             </div>
                         </div>

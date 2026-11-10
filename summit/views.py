@@ -1,124 +1,166 @@
-from django.shortcuts import render, get_object_or_404, redirect
+import logging
+from itertools import groupby
+
+from django.conf import settings
 from django.contrib import messages
 from django.core.mail import send_mail
-from django.conf import settings
-import logging
-from .models import (
-    SiteSettings, EventContent, Speaker, SponsorshipLevel, Sponsor,
-    AwardCategory, Nomination, ExhibitionPackage, Exhibitor,
-    AboutSectionContent, SummitOrganizer, ConferenceRegistration
-)
-from .forms import NominationForm, ConferenceRegistrationForm
+from django.db.models import Count, Q
+from django.shortcuts import get_object_or_404, redirect, render
+from django.template.loader import render_to_string
 
-# Get logger for this module
+from .forms import ConferenceRegistrationForm, NominationForm
+from .models import (
+    AboutSectionContent, AwardCategory, ConferenceRegistration, EventContent,
+    ExhibitionPackage, GalleryAlbum, GalleryPhoto, Highlight, SiteSettings,
+    Speaker, Sponsor, SponsorshipLevel, SummitOrganizer, TicketType,
+)
+
 logger = logging.getLogger('summit')
 
 
+def _client_ip(request):
+    return request.META.get('REMOTE_ADDR')
+
+
 def home(request):
-    try:
-        logger.info(f"Home page accessed from IP: {request.META.get('REMOTE_ADDR')}")
-        
-        site_settings = SiteSettings.objects.first()
-        event_content = EventContent.objects.first()
-        about_section_content = AboutSectionContent.objects.first()
-        featured_speakers = Speaker.objects.all()  # Show all speakers on home page
-        sponsors = Sponsor.objects.filter(is_active=True)
-        summit_organizers = SummitOrganizer.objects.filter(is_active=True)
-        
-        context = {
-            'site_settings': site_settings,
-            'event_content': event_content,
-            'about_section_content': about_section_content,
-            'featured_speakers': featured_speakers,
-            'sponsors': sponsors,
-            'summit_organizers': summit_organizers,
-        }
-        
-        logger.info(f"Home page loaded successfully with {featured_speakers.count()} speakers, {sponsors.count()} sponsors, {summit_organizers.count()} organizers")
-        return render(request, 'summit/home.html', context)
-        
-    except Exception as e:
-        logger.error(f"Error loading home page: {str(e)}", exc_info=True)
-        raise
+    highlights = Highlight.objects.filter(is_active=True)
+    gallery_photos = (GalleryPhoto.objects
+                      .filter(album__is_published=True)
+                      .select_related('album')
+                      .order_by('-album__year', 'album__order', 'order', 'id')[:9])
+    context = {
+        'event_content': EventContent.get_solo(),
+        'about_section_content': AboutSectionContent.get_solo(),
+        'topics': [h for h in highlights if h.section == 'topics'],
+        'why_attend': [h for h in highlights if h.section == 'why_attend'],
+        'featured_speakers': Speaker.objects.all(),
+        'sponsors': Sponsor.objects.filter(is_active=True).select_related('level'),
+        'summit_organizers': SummitOrganizer.objects.filter(is_active=True),
+        'gallery_photos': gallery_photos,
+    }
+    return render(request, 'summit/home.html', context)
 
 
 def speakers(request):
-    speakers_list = Speaker.objects.all()
-    context = {
-        'speakers': speakers_list,
-    }
-    return render(request, 'summit/speakers.html', context)
+    return render(request, 'summit/speakers.html', {'speakers': Speaker.objects.all()})
 
 
 def sponsorship(request):
-    sponsorship_levels = SponsorshipLevel.objects.all()
-    exhibition_packages = ExhibitionPackage.objects.all()
     context = {
-        'sponsorship_levels': sponsorship_levels,
-        'exhibition_packages': exhibition_packages,
+        'sponsorship_levels': SponsorshipLevel.objects.all(),
+        'exhibition_packages': ExhibitionPackage.objects.all(),
+        'partner_benefits': Highlight.objects.filter(section='partner_benefits', is_active=True),
     }
     return render(request, 'summit/sponsorship.html', context)
 
 
 def nominations(request):
-    try:
-        logger.info(f"Nominations page accessed from IP: {request.META.get('REMOTE_ADDR')}")
-        categories = AwardCategory.objects.filter(is_active=True)
-        
-        if request.method == 'POST':
-            logger.info(f"Nomination form submitted from IP: {request.META.get('REMOTE_ADDR')}")
-            form = NominationForm(request.POST, request.FILES)
-            if form.is_valid():
-                nomination = form.save()
-                logger.info(f"New nomination submitted: {nomination.nominee_name} for {nomination.category.name} by {nomination.nominator_email}")
-                messages.success(request, 'Your nomination has been submitted successfully!')
-                return redirect('nominations')
-            else:
-                logger.warning(f"Invalid nomination form submission from {request.META.get('REMOTE_ADDR')}: {form.errors}")
-        else:
-            form = NominationForm()
-        
-        context = {
-            'categories': categories,
-            'form': form,
-        }
-        return render(request, 'summit/nominations.html', context)
-        
-    except Exception as e:
-        logger.error(f"Error in nominations view: {str(e)}", exc_info=True)
-        raise
+    categories = AwardCategory.objects.filter(is_active=True)
+    if request.method == 'POST':
+        form = NominationForm(request.POST, request.FILES)
+        if form.is_valid():
+            nomination = form.save()
+            logger.info('New nomination: %s for %s by %s', nomination.nominee_name,
+                        nomination.category.name, nomination.nominator_email)
+            return redirect('nomination_success')
+        logger.warning('Invalid nomination form from %s: %s', _client_ip(request), form.errors.as_json())
+    else:
+        form = NominationForm()
+    return render(request, 'summit/nominations.html', {'categories': categories, 'form': form})
 
 
 def nomination_success(request):
     return render(request, 'summit/nomination_success.html')
 
 
+# ------------------------------------------------------------------ gallery
+
+def _visible_albums(request):
+    albums = GalleryAlbum.objects.annotate(photo_count=Count('photos'))
+    if not request.user.is_staff:
+        albums = albums.filter(is_published=True)
+    return albums
+
+
+def gallery(request):
+    albums = list(_visible_albums(request).prefetch_related('photos'))
+    if not request.user.is_staff:
+        albums = [a for a in albums if a.photo_count]
+    years = sorted({a.year for a in albums}, reverse=True)
+    context = {
+        'albums_by_year': [(year, list(group)) for year, group in groupby(albums, key=lambda a: a.year)],
+        'years': years,
+        'total_photos': sum(a.photo_count for a in albums),
+    }
+    return render(request, 'summit/gallery.html', context)
+
+
+def gallery_album(request, slug):
+    album = get_object_or_404(_visible_albums(request), slug=slug)
+    photos = album.photos.all()
+    others = (_visible_albums(request).exclude(pk=album.pk)
+              .filter(photo_count__gt=0).prefetch_related('photos')[:3])
+    return render(request, 'summit/gallery_album.html',
+                  {'album': album, 'photos': photos, 'other_albums': others})
+
+
+# ------------------------------------------------------------- registration
+
+def _send_registration_emails(request, registration):
+    site = SiteSettings.get_solo()
+    ctx = {'registration': registration, 'site_settings': site,
+           'event_content': EventContent.get_solo(),
+           'site_url': request.build_absolute_uri('/')}
+    if site.send_confirmation_emails:
+        try:
+            send_mail(
+                subject=f'Your registration is confirmed: {registration.reference}',
+                message=render_to_string('summit/emails/registration_confirmation.txt', ctx),
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[registration.email],
+            )
+        except Exception:
+            logger.error('Could not send confirmation email to %s', registration.email, exc_info=True)
+    if site.registration_notify_contact:
+        try:
+            send_mail(
+                subject=f'New registration: {registration.full_name} ({registration.ticket})',
+                message=render_to_string('summit/emails/registration_notification.txt', ctx),
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[site.registration_notify_contact],
+            )
+        except Exception:
+            logger.error('Could not send registration notification', exc_info=True)
+
+
 def registration(request):
-    try:
-        logger.info(f"Registration page accessed from IP: {request.META.get('REMOTE_ADDR')}")
-        
-        if request.method == 'POST':
-            logger.info(f"Registration form submitted from IP: {request.META.get('REMOTE_ADDR')}")
-            form = ConferenceRegistrationForm(request.POST)
-            if form.is_valid():
-                registration = form.save()
-                logger.info(f"New registration: {registration.first_name} {registration.last_name} ({registration.email}) - {registration.ticket_type}")
-                messages.success(request, 'Your registration has been submitted successfully! We will contact you with further details.')
-                return redirect('registration_success')
-            else:
-                logger.warning(f"Invalid registration form submission from {request.META.get('REMOTE_ADDR')}: {form.errors}")
-        else:
-            form = ConferenceRegistrationForm()
-        
-        context = {
-            'form': form,
-        }
-        return render(request, 'summit/registration.html', context)
-        
-    except Exception as e:
-        logger.error(f"Error in registration view: {str(e)}", exc_info=True)
-        raise
+    site = SiteSettings.get_solo()
+    tickets = TicketType.objects.filter(is_active=True)
+    has_tickets = any(not t.is_sold_out for t in tickets)
+
+    if not site.registration_open or not has_tickets:
+        return render(request, 'summit/registration.html',
+                      {'closed': True, 'sold_out': site.registration_open and not has_tickets})
+
+    if request.method == 'POST':
+        form = ConferenceRegistrationForm(request.POST)
+        if form.is_valid():
+            reg = form.save()
+            logger.info('New registration %s: %s (%s) - %s', reg.reference, reg.full_name, reg.email, reg.ticket)
+            _send_registration_emails(request, reg)
+            request.session['registration_id'] = reg.pk
+            return redirect('registration_success')
+        logger.warning('Invalid registration form from %s: %s', _client_ip(request), form.errors.as_json())
+    else:
+        form = ConferenceRegistrationForm()
+    return render(request, 'summit/registration.html',
+                  {'form': form, 'tickets': tickets, 'event_content': EventContent.get_solo()})
 
 
 def registration_success(request):
-    return render(request, 'summit/registration_success.html')
+    reg = None
+    reg_id = request.session.get('registration_id')
+    if reg_id:
+        reg = ConferenceRegistration.objects.select_related('ticket').filter(pk=reg_id).first()
+    return render(request, 'summit/registration_success.html',
+                  {'registration': reg, 'event_content': EventContent.get_solo()})

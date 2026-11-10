@@ -1,5 +1,5 @@
 {% extends 'summit/base.html' %}
-{% load static %}
+{% load static cms %}
 
 {% block title %}Awards Nominations - Nigeria Transport and Logistics Summit{% endblock %}
 
@@ -9,11 +9,8 @@
     <div class="container hero-content">
         <div class="row">
             <div class="col-lg-8">
-                <h1 class="display-4 fw-bold mb-4">Awards Nominations</h1>
-                <p class="lead">
-                    Recognize excellence in Nigeria's transport and logistics industry. 
-                    Nominate outstanding individuals and organizations making a difference.
-                </p>
+                <h1 class="display-4 fw-bold mb-4">{% cms_block "nominations.hero.title" "Awards Nominations" %}</h1>
+                <p class="lead">{% cms_block "nominations.hero.text" "Recognize excellence in Nigeria's transport and logistics industry. Nominate outstanding individuals and organizations making a difference." multiline=True %}</p>
             </div>
         </div>
     </div>
@@ -24,8 +21,9 @@
 <section class="section-padding bg-light">
     <div class="container">
         <div class="text-center mb-5">
-            <h2 class="text-primary-custom">Award Categories</h2>
-            <p class="lead">Explore our award categories and their criteria</p>
+            <h2 class="text-primary-custom">{% cms_block "nominations.categories.title" "Award Categories" %}</h2>
+            <p class="lead">{% cms_block "nominations.categories.subtitle" "Explore our award categories and their criteria" %}</p>
+            <div class="cms-manage-row">{% cms_manage "summit.awardcategory" "Manage award categories" %}</div>
         </div>
         
         <div class="row">
@@ -38,19 +36,19 @@
                                 <i class="fas fa-award fa-2x text-primary-custom"></i>
                             </div>
                             <div>
-                                <h5 class="card-title text-primary-custom mb-2">{{ category.name }}</h5>
-                                <p class="card-text">{{ category.description }}</p>
+                                <h5 class="card-title text-primary-custom mb-2">{% cms_field category "name" %}</h5>
+                                <p class="card-text">{% cms_field category "description" %}</p>
                             </div>
                         </div>
                         
                         <div class="mt-3">
                             <h6 class="text-muted mb-2">Judging Criteria:</h6>
-                            <p class="card-text"><small>{{ category.criteria|linebreaks }}</small></p>
+                            <div class="card-text small">{% cms_field category "criteria" %}</div>
                         </div>
                         
                         <div class="mt-3">
-                            <button type="button" class="btn btn-outline-primary" 
-                                    onclick="selectCategory('{{ category.id }}', '{{ category.name }}')">
+                            <button type="button" class="btn btn-outline-primary js-select-category"
+                                    data-category-id="{{ category.id }}" data-category-name="{{ category.name }}">
                                 <i class="fas fa-plus me-2"></i>Nominate for This Category
                             </button>
                         </div>
@@ -82,18 +80,21 @@
                                 <div class="col-md-6 mb-4">
                                     <label class="form-label fw-bold">Award Category *</label>
                                     {{ form.category }}
+                                    {% for e in form.category.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
                                     <div class="form-text">Select the category that best fits your nomination</div>
                                 </div>
                                 
                                 <div class="col-md-6 mb-4">
                                     <label class="form-label fw-bold">Nominee Name *</label>
                                     {{ form.nominee_name }}
+                                    {% for e in form.nominee_name.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
                                 </div>
                             </div>
                             
                             <div class="mb-4">
                                 <label class="form-label fw-bold">Nominee Company/Organization</label>
                                 {{ form.nominee_company }}
+                                {% for e in form.nominee_company.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
                                 <div class="form-text">Optional - if applicable</div>
                             </div>
                             
@@ -104,17 +105,20 @@
                                 <div class="col-md-6 mb-4">
                                     <label class="form-label fw-bold">Your Name *</label>
                                     {{ form.nominator_name }}
+                                    {% for e in form.nominator_name.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
                                 </div>
                                 
                                 <div class="col-md-6 mb-4">
                                     <label class="form-label fw-bold">Your Email *</label>
                                     {{ form.nominator_email }}
+                                    {% for e in form.nominator_email.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
                                 </div>
                             </div>
                             
                             <div class="mb-4">
                                 <label class="form-label fw-bold">Your Phone Number</label>
                                 {{ form.nominator_phone }}
+                                {% for e in form.nominator_phone.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
                                 <div class="form-text">Optional - for follow-up questions</div>
                             </div>
                             
@@ -124,6 +128,7 @@
                             <div class="mb-4">
                                 <label class="form-label fw-bold">Why does this person/organization deserve this award? *</label>
                                 {{ form.nomination_reason }}
+                                {% for e in form.nomination_reason.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
                                 <div class="form-text">
                                     Please provide detailed reasons for your nomination, including specific achievements, 
                                     contributions, and impact on the transport and logistics industry.
@@ -133,12 +138,17 @@
                             <div class="mb-4">
                                 <label class="form-label fw-bold">Supporting Documents</label>
                                 {{ form.supporting_documents }}
+                                {% for e in form.supporting_documents.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
                                 <div class="form-text">
                                     Optional - Upload any supporting documents (PDF, Word documents, or images) 
                                     that strengthen your nomination.
                                 </div>
                             </div>
                             
+                            <div class="visually-hidden" aria-hidden="true">{{ form.website }}</div>
+                            {% if form.non_field_errors or form.errors %}
+                                <div class="alert alert-danger">Please correct the highlighted fields below.</div>
+                            {% endif %}
                             <div class="d-grid gap-2">
                                 <button type="submit" class="btn btn-primary btn-lg">
                                     <i class="fas fa-paper-plane me-2"></i>Submit Nomination
@@ -158,7 +168,7 @@
         <div class="row">
             <div class="col-lg-8 mx-auto">
                 <div class="text-center mb-5">
-                    <h2 class="text-primary-custom">Nomination Guidelines</h2>
+                    <h2 class="text-primary-custom">{% cms_block "nominations.guidelines.title" "Nomination Guidelines" %}</h2>
                 </div>
                 
                 <div class="row">
@@ -168,13 +178,8 @@
                                 <div class="mb-3">
                                     <i class="fas fa-check-circle fa-2x text-success"></i>
                                 </div>
-                                <h5 class="card-title">Eligibility</h5>
-                                <ul class="list-unstyled">
-                                    <li><i class="fas fa-chevron-right text-primary-custom me-2"></i>Must be based in Nigeria</li>
-                                    <li><i class="fas fa-chevron-right text-primary-custom me-2"></i>Active in transport/logistics sector</li>
-                                    <li><i class="fas fa-chevron-right text-primary-custom me-2"></i>Demonstrable impact and achievements</li>
-                                    <li><i class="fas fa-chevron-right text-primary-custom me-2"></i>Ethical business practices</li>
-                                </ul>
+                                <h5 class="card-title">{% cms_block "nominations.guidelines.eligibility_title" "Eligibility" %}</h5>
+                                {% cms_list "nominations.guidelines.eligibility" "Must be based in Nigeria | Active in transport/logistics sector | Demonstrable impact and achievements | Ethical business practices" %}
                             </div>
                         </div>
                     </div>
@@ -185,13 +190,8 @@
                                 <div class="mb-3">
                                     <i class="fas fa-calendar-check fa-2x text-primary-custom"></i>
                                 </div>
-                                <h5 class="card-title">Timeline</h5>
-                                <ul class="list-unstyled">
-                                    <li><i class="fas fa-chevron-right text-primary-custom me-2"></i>Nominations open now</li>
-                                    <li><i class="fas fa-chevron-right text-primary-custom me-2"></i>Deadline: [Date to be announced]</li>
-                                    <li><i class="fas fa-chevron-right text-primary-custom me-2"></i>Review period: [Date range]</li>
-                                    <li><i class="fas fa-chevron-right text-primary-custom me-2"></i>Awards ceremony at summit</li>
-                                </ul>
+                                <h5 class="card-title">{% cms_block "nominations.guidelines.timeline_title" "Timeline" %}</h5>
+                                {% cms_list "nominations.guidelines.timeline" "Nominations open now | Deadline: [Date to be announced] | Review period: [Date range] | Awards ceremony at summit" %}
                             </div>
                         </div>
                     </div>
@@ -203,13 +203,8 @@
                             <i class="fas fa-info-circle fa-lg"></i>
                         </div>
                         <div>
-                            <h6 class="alert-heading">Important Notes</h6>
-                            <ul class="mb-0">
-                                <li>All nominations will be reviewed by our expert judging panel</li>
-                                <li>Winners will be announced at the summit awards ceremony</li>
-                                <li>Nominees may be contacted for additional information</li>
-                                <li>Self-nominations are accepted</li>
-                            </ul>
+                            <h6 class="alert-heading">{% cms_block "nominations.notes.title" "Important Notes" %}</h6>
+                            {% cms_list "nominations.notes.items" "All nominations will be reviewed by our expert judging panel | Winners will be announced at the summit awards ceremony | Nominees may be contacted for additional information | Self-nominations are accepted" icon="" ul_class="mb-0" %}
                         </div>
                     </div>
                 </div>
@@ -223,12 +218,10 @@
     <div class="container text-center">
         <div class="row">
             <div class="col-lg-8 mx-auto">
-                <h2 class="mb-4">Questions About Nominations?</h2>
-                <p class="lead mb-4">
-                    Our team is here to help you through the nomination process
-                </p>
-                <a href="mailto:awards@tlngsummit.com" class="btn btn-light btn-lg">
-                    <i class="fas fa-envelope me-2"></i>Contact Awards Team
+                <h2 class="mb-4">{% cms_block "nominations.cta.title" "Questions About Nominations?" %}</h2>
+                <p class="lead mb-4">{% cms_block "nominations.cta.text" "Our team is here to help you through the nomination process" %}</p>
+                <a href="mailto:{{ site_settings.awards_contact }}?subject=Nomination%20enquiry" class="btn btn-light btn-lg">
+                    <i class="fas fa-envelope me-2"></i>{% cms_block "nominations.cta.button" "Contact Awards Team" %}
                 </a>
             </div>
         </div>
@@ -236,32 +229,23 @@
 </section>
 
 <script>
-function selectCategory(categoryId, categoryName) {
-    // Set the category in the form
-    const categorySelect = document.getElementById('id_category');
-    categorySelect.value = categoryId;
-    
-    // Scroll to the form
-    document.getElementById('nominationForm').scrollIntoView({ 
-        behavior: 'smooth' 
+document.querySelectorAll('.js-select-category').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+        if (document.body.classList.contains('cms-editing')) return;
+        var form = document.getElementById('nominationForm');
+        document.getElementById('id_category').value = btn.dataset.categoryId;
+        form.scrollIntoView({ behavior: 'smooth' });
+
+        var note = document.createElement('div');
+        note.className = 'alert alert-success mt-3';
+        var strong = document.createElement('strong');
+        strong.textContent = 'Category selected: ';
+        note.appendChild(strong);
+        note.appendChild(document.createTextNode(btn.dataset.categoryName));
+        form.parentNode.insertBefore(note, form);
+        setTimeout(function () { note.remove(); }, 3000);
     });
-    
-    // Optional: Show a brief confirmation
-    const alert = document.createElement('div');
-    alert.className = 'alert alert-success alert-dismissible fade show mt-3';
-    alert.innerHTML = `
-        <strong>Category Selected:</strong> ${categoryName}
-        <button type="button" class="btn-close" data-mdb-dismiss="alert"></button>
-    `;
-    
-    const form = document.getElementById('nominationForm');
-    form.parentNode.insertBefore(alert, form);
-    
-    // Auto-dismiss after 3 seconds
-    setTimeout(() => {
-        alert.remove();
-    }, 3000);
-}
+});
 </script>
 
 <style>

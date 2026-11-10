@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{% load static cms %}<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -30,8 +30,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Mulish:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    {% load static %}
     <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    {% if request.user.is_staff %}<link rel="stylesheet" href="{% static 'css/cms.css' %}">{% endif %}
+    {% block extra_head %}{% endblock %}
     
     <style>
         body {
@@ -289,23 +290,28 @@
             </button>
             
             <div class="collapse navbar-collapse" id="navbarNav">
+                {% with current=request.resolver_match.url_name %}
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home' %}">Home</a>
+                        <a class="nav-link{% if current == 'home' %} active{% endif %}" href="{% url 'home' %}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'speakers' %}">Speakers</a>
+                        <a class="nav-link{% if current == 'speakers' %} active{% endif %}" href="{% url 'speakers' %}">Speakers</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'sponsorship' %}">Sponsorship</a>
+                        <a class="nav-link{% if current == 'gallery' or current == 'gallery_album' %} active{% endif %}" href="{% url 'gallery' %}">Gallery</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'nominations' %}">Nominations</a>
+                        <a class="nav-link{% if current == 'sponsorship' %} active{% endif %}" href="{% url 'sponsorship' %}">Sponsorship</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link btn btn-outline-light ms-2 px-3" href="{% url 'registration' %}">Register</a>
+                        <a class="nav-link{% if current == 'nominations' %} active{% endif %}" href="{% url 'nominations' %}">Nominations</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-outline-light ms-md-2 px-3" href="{% url 'registration' %}">Register</a>
                     </li>
                 </ul>
+                {% endwith %}
             </div>
         </div>
     </nav>
@@ -352,10 +358,7 @@
                             <span>TLNG Summit & Awards</span>
                         {% endif %}
                     </h5>
-                    <p class="mb-3">
-                        Nigeria's premier transport and logistics industry event, 
-                        bringing together industry leaders, innovators, and decision-makers.
-                    </p>
+                    <p class="mb-3">{% cms_block "site.footer.about" "Nigeria's premier transport and logistics industry event, bringing together industry leaders, innovators, and decision-makers." multiline=True %}</p>
                 </div>
                 <div class="col-lg-4 mb-4">
                     <h5 class="mb-3">Quick Links</h5>
@@ -363,19 +366,24 @@
                         <li><a href="{% url 'home' %}" class="text-white-50 text-decoration-none">Home</a></li>
                         <li><a href="{% url 'speakers' %}" class="text-white-50 text-decoration-none">Speakers</a></li>
                         <li><a href="{% url 'sponsorship' %}" class="text-white-50 text-decoration-none">Sponsorship</a></li>
+                        <li><a href="{% url 'gallery' %}" class="text-white-50 text-decoration-none">Gallery</a></li>
                         <li><a href="{% url 'nominations' %}" class="text-white-50 text-decoration-none">Awards</a></li>
+                        <li><a href="{% url 'registration' %}" class="text-white-50 text-decoration-none">Register</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-4 mb-4">
                     <h5 class="mb-3">Contact Info</h5>
                     <p class="mb-2">
                         <i class="fas fa-envelope me-2"></i>
-                        {% if site_settings %}{{ site_settings.contact_email }}{% else %}info@tlngsummit.com{% endif %}
+                        <a href="mailto:{{ site_settings.contact_email }}" class="text-white text-decoration-none">{{ site_settings.contact_email }}</a>
                     </p>
                     <p class="mb-2">
                         <i class="fas fa-phone me-2"></i>
-                        {% if site_settings %}{{ site_settings.contact_phone }}{% else %}+234 xxx xxx xxxx{% endif %}
+                        <a href="tel:{{ site_settings.contact_phone|cut:' ' }}" class="text-white text-decoration-none">{{ site_settings.contact_phone }}</a>
                     </p>
+                    {% if site_settings.contact_address %}
+                    <p class="mb-2"><i class="fas fa-map-marker-alt me-2"></i>{{ site_settings.contact_address }}</p>
+                    {% endif %}
                     <div class="mt-3">
                         {% if site_settings.social_facebook %}
                             <a href="{{ site_settings.social_facebook }}" target="_blank" class="text-white me-3"><i class="fab fa-facebook fa-lg"></i></a>
@@ -389,18 +397,12 @@
                         {% if site_settings.social_instagram %}
                             <a href="{{ site_settings.social_instagram }}" target="_blank" class="text-white"><i class="fab fa-instagram fa-lg"></i></a>
                         {% endif %}
-                        {% if not site_settings or not site_settings.social_facebook and not site_settings.social_twitter and not site_settings.social_linkedin and not site_settings.social_instagram %}
-                            <a href="#" class="text-white me-3"><i class="fab fa-facebook fa-lg"></i></a>
-                            <a href="#" class="text-white me-3"><i class="fab fa-twitter fa-lg"></i></a>
-                            <a href="#" class="text-white me-3"><i class="fab fa-linkedin fa-lg"></i></a>
-                            <a href="#" class="text-white"><i class="fab fa-instagram fa-lg"></i></a>
-                        {% endif %}
                     </div>
                 </div>
             </div>
             <hr class="my-4">
             <div class="text-center">
-                <p class="mb-0">&copy; 2024 Nigeria Transport and Logistics Summit. All rights reserved.</p>
+                <p class="mb-0">&copy; {% now "Y" %} {% cms_block "site.footer.copyright" "Nigeria Transport and Logistics Summit. All rights reserved." %}</p>
             </div>
         </div>
     </footer>
@@ -440,6 +442,19 @@
         });
     </script>
     
+    <script src="{% static 'js/gallery.js' %}" defer></script>
+
+    {% if request.user.is_staff %}
+    <!-- Live editing toolbar (staff only) -->
+    <div id="cms-toolbar" data-endpoint="{% url 'cms_update' %}" data-csrf="{{ csrf_token }}" aria-label="Site editing tools">
+        <button type="button" id="cms-toggle" aria-pressed="false"><i class="fas fa-pen"></i> Edit page</button>
+        <span class="cms-hint">Click highlighted text to edit · click a picture to replace it</span>
+        <a href="{% url 'admin:index' %}" title="Admin dashboard"><i class="fas fa-gauge"></i><span class="cms-label-long">Dashboard</span></a>
+        <form method="post" action="{% url 'admin:logout' %}" class="d-inline m-0">{% csrf_token %}<button type="submit" title="Log out"><i class="fas fa-right-from-bracket"></i></button></form>
+    </div>
+    <script src="{% static 'js/cms.js' %}" defer></script>
+    {% endif %}
+
     {% block extra_js %}{% endblock %}
 </body>
 </html>

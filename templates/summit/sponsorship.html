@@ -1,5 +1,5 @@
 {% extends 'summit/base.html' %}
-{% load static %}
+{% load static cms %}
 {% load humanize %}
 
 {% block title %}Sponsorship & Exhibition - Nigeria Transport and Logistics Summit{% endblock %}
@@ -10,11 +10,8 @@
     <div class="container hero-content">
         <div class="row">
             <div class="col-lg-8">
-                <h1 class="display-4 fw-bold mb-4">Partner With Us</h1>
-                <p class="lead">
-                    Join Nigeria's premier transport and logistics event as a sponsor or exhibitor. 
-                    Connect with industry leaders, showcase your solutions, and build lasting partnerships.
-                </p>
+                <h1 class="display-4 fw-bold mb-4">{% cms_block "sponsorship.hero.title" "Partner With Us" %}</h1>
+                <p class="lead">{% cms_block "sponsorship.hero.text" "Join Nigeria's premier transport and logistics event as a sponsor or exhibitor. Connect with industry leaders, showcase your solutions, and build lasting partnerships." multiline=True %}</p>
             </div>
         </div>
     </div>
@@ -25,8 +22,8 @@
 <section class="section-padding">
     <div class="container">
         <div class="text-center mb-5">
-            <h2 class="text-primary-custom">Sponsorship Packages</h2>
-            <p class="lead">Choose the sponsorship level that best fits your goals</p>
+            <h2 class="text-primary-custom">{% cms_block "sponsorship.packages.title" "Sponsorship Packages" %}</h2>
+            <p class="lead">{% cms_block "sponsorship.packages.subtitle" "Choose the sponsorship level that best fits your goals" %}</p>
         </div>
         
         <div class="row justify-content-center">
@@ -50,7 +47,7 @@
                         </div>
                     </div>
                     <div class="card-footer text-center">
-                        <a href="mailto:partnerships@tlngsummit.com?subject=Sponsorship Inquiry - {{ level.get_name_display }}" 
+                        <a href="mailto:{{ site_settings.sponsorship_contact }}?subject=Sponsorship%20Inquiry%20-%20{{ level.get_name_display|urlencode }}" 
                            class="btn btn-primary btn-lg w-100">
                             <i class="fas fa-handshake me-2"></i>Get Started
                         </a>
@@ -68,8 +65,8 @@
 <section class="section-padding bg-light">
     <div class="container">
         <div class="text-center mb-5">
-            <h2 class="text-primary-custom">Exhibition Opportunities</h2>
-            <p class="lead">Showcase your products and services to industry professionals</p>
+            <h2 class="text-primary-custom">{% cms_block "sponsorship.exhibition.title" "Exhibition Opportunities" %}</h2>
+            <p class="lead">{% cms_block "sponsorship.exhibition.subtitle" "Showcase your products and services to industry professionals" %}</p>
         </div>
         
         <div class="row justify-content-center">
@@ -96,7 +93,7 @@
                         </p>
                     </div>
                     <div class="card-footer">
-                        <a href="mailto:exhibition@tlngsummit.com?subject=Exhibition Inquiry - {{ package.get_name_display }}" 
+                        <a href="mailto:{{ site_settings.exhibition_contact }}?subject=Exhibition%20Inquiry%20-%20{{ package.get_name_display|urlencode }}" 
                            class="btn btn-outline-primary w-100">
                             <i class="fas fa-envelope me-2"></i>Book Booth
                         </a>
@@ -110,115 +107,38 @@
 {% endif %}
 
 <!-- Benefits Section -->
+{% if partner_benefits or request.user.is_staff %}
 <section class="section-padding">
     <div class="container">
         <div class="text-center mb-5">
-            <h2 class="text-primary-custom">Why Partner With Us?</h2>
-            <p class="lead">Discover the value of partnering with Nigeria's premier transport event</p>
+            <h2 class="text-primary-custom">{% cms_block "sponsorship.benefits.title" "Why Partner With Us?" %}</h2>
+            <p class="lead">{% cms_block "sponsorship.benefits.subtitle" "Discover the value of partnering with Nigeria's premier transport event" %}</p>
         </div>
-        
-        <div class="row">
+
+        <div class="row justify-content-center">
+            {% for item in partner_benefits %}
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="card card-hover h-100 text-center">
                     <div class="card-body">
-                        <div class="mb-3">
-                            <i class="fas fa-users fa-3x text-primary-custom"></i>
-                        </div>
-                        <h5 class="card-title">Targeted Audience</h5>
-                        <p class="card-text">
-                            Connect with 500+ industry professionals, decision-makers, and 
-                            key stakeholders in Nigeria's transport sector.
-                        </p>
+                        <div class="mb-3"><i class="fas {{ item.icon }} fa-3x text-primary-custom"></i></div>
+                        <h5 class="card-title">{% cms_field item "title" %}</h5>
+                        <p class="card-text">{% cms_field item "description" %}</p>
                     </div>
                 </div>
             </div>
-            
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card card-hover h-100 text-center">
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <i class="fas fa-chart-line fa-3x text-primary-custom"></i>
-                        </div>
-                        <h5 class="card-title">Brand Visibility</h5>
-                        <p class="card-text">
-                            Enhance your brand presence through prominent logo placement, 
-                            speaking opportunities, and media coverage.
-                        </p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card card-hover h-100 text-center">
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <i class="fas fa-handshake fa-3x text-primary-custom"></i>
-                        </div>
-                        <h5 class="card-title">Business Opportunities</h5>
-                        <p class="card-text">
-                            Generate leads, build partnerships, and explore new business 
-                            opportunities in the growing logistics market.
-                        </p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card card-hover h-100 text-center">
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <i class="fas fa-globe-africa fa-3x text-primary-custom"></i>
-                        </div>
-                        <h5 class="card-title">Market Leadership</h5>
-                        <p class="card-text">
-                            Position your company as a market leader and innovator in 
-                            Nigeria's transport and logistics industry.
-                        </p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card card-hover h-100 text-center">
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <i class="fas fa-camera fa-3x text-primary-custom"></i>
-                        </div>
-                        <h5 class="card-title">Media Coverage</h5>
-                        <p class="card-text">
-                            Benefit from extensive media coverage across print, digital, 
-                            and broadcast platforms throughout Nigeria.
-                        </p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card card-hover h-100 text-center">
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <i class="fas fa-network-wired fa-3x text-primary-custom"></i>
-                        </div>
-                        <h5 class="card-title">Networking</h5>
-                        <p class="card-text">
-                            Access exclusive networking sessions, VIP events, and 
-                            one-on-one meetings with industry leaders.
-                        </p>
-                    </div>
-                </div>
-            </div>
+            {% endfor %}
         </div>
+        <div class="cms-manage-row">{% cms_manage "summit.highlight" "Add, reorder or remove cards" %}</div>
     </div>
 </section>
+{% endif %}
 
 <!-- Contact Section -->
 <section class="section-padding bg-primary-custom text-white">
     <div class="container">
         <div class="text-center mb-5">
-            <h2>Ready to Partner With Us?</h2>
-            <p class="lead">
-                Let's discuss how we can create a customized partnership that meets your objectives
-            </p>
+            <h2>{% cms_block "sponsorship.contact.title" "Ready to Partner With Us?" %}</h2>
+            <p class="lead">{% cms_block "sponsorship.contact.subtitle" "Let's discuss how we can create a customized partnership that meets your objectives" %}</p>
         </div>
         
         <div class="row justify-content-center">
@@ -229,12 +149,10 @@
                             <div class="mb-3">
                                 <i class="fas fa-handshake fa-3x"></i>
                             </div>
-                            <h5>Sponsorship Inquiries</h5>
-                            <p class="mb-3">
-                                Explore our sponsorship packages and find the perfect fit for your brand.
-                            </p>
-                            <a href="mailto:partnerships@tlngsummit.com" class="btn btn-light btn-lg">
-                                <i class="fas fa-envelope me-2"></i>Contact Partnerships Team
+                            <h5>{% cms_block "sponsorship.contact.sponsor_title" "Sponsorship Inquiries" %}</h5>
+                            <p class="mb-3">{% cms_block "sponsorship.contact.sponsor_text" "Explore our sponsorship packages and find the perfect fit for your brand." %}</p>
+                            <a href="mailto:{{ site_settings.sponsorship_contact }}" class="btn btn-light btn-lg">
+                                <i class="fas fa-envelope me-2"></i>{% cms_block "sponsorship.contact.sponsor_button" "Contact Partnerships Team" %}
                             </a>
                         </div>
                     </div>
@@ -244,12 +162,10 @@
                             <div class="mb-3">
                                 <i class="fas fa-store fa-3x"></i>
                             </div>
-                            <h5>Exhibition Bookings</h5>
-                            <p class="mb-3">
-                                Secure your booth space and showcase your solutions to industry professionals.
-                            </p>
-                            <a href="mailto:exhibition@tlngsummit.com" class="btn btn-light btn-lg">
-                                <i class="fas fa-envelope me-2"></i>Book Exhibition Space
+                            <h5>{% cms_block "sponsorship.contact.exhibit_title" "Exhibition Bookings" %}</h5>
+                            <p class="mb-3">{% cms_block "sponsorship.contact.exhibit_text" "Secure your booth space and showcase your solutions to industry professionals." %}</p>
+                            <a href="mailto:{{ site_settings.exhibition_contact }}" class="btn btn-light btn-lg">
+                                <i class="fas fa-envelope me-2"></i>{% cms_block "sponsorship.contact.exhibit_button" "Book Exhibition Space" %}
                             </a>
                         </div>
                     </div>
@@ -257,12 +173,9 @@
                 
                 <div class="text-center mt-4">
                     <p class="lead">
-                        <i class="fas fa-phone me-2"></i>+234 803 880 7317
+                        <i class="fas fa-phone me-2"></i>{% cms_block "sponsorship.contact.phone" "+234 803 880 7317" %}
                     </p>
-                    <p>
-                        Our partnerships team is available to discuss custom packages 
-                        tailored to your specific needs and objectives.
-                    </p>
+                    <p>{% cms_block "sponsorship.contact.note" "Our partnerships team is available to discuss custom packages tailored to your specific needs and objectives." multiline=True %}</p>
                 </div>
             </div>
         </div>

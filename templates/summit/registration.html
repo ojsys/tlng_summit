@@ -1,173 +1,160 @@
 {% extends 'summit/base.html' %}
-{% load static %}
+{% load static cms %}
+
+{% block title %}Register - {{ site_settings.site_name }}{% endblock %}
 
 {% block content %}
-<section class="section-padding">
-    <div class="container">
-        <div class="row justify-content-center">
+<section class="hero-section page-hero">
+    <div class="container hero-content">
+        <div class="row">
             <div class="col-lg-8">
-                <div class="text-center mb-5">
-                    <h1 class="display-5 fw-bold text-primary-custom">Conference Registration</h1>
-                    <p class="lead text-muted">Join us at Nigeria's premier transport and logistics event</p>
-                </div>
-
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                            {{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    {% endfor %}
+                <h1 class="display-4 fw-bold mb-3">{% cms_block "registration.hero.title" "Conference Registration" %}</h1>
+                <p class="lead mb-0">{% cms_block "registration.hero.text" "Join us at Nigeria's premier transport and logistics event" %}</p>
+                {% if event_content %}
+                <p class="mt-3 mb-0 opacity-75">
+                    <i class="far fa-calendar me-2"></i>{{ event_content.event_date|date:"l, F j, Y" }}
+                    <span class="mx-2">•</span><i class="fas fa-map-marker-alt me-2"></i>{{ event_content.venue }}
+                </p>
                 {% endif %}
-
-                <div class="card shadow-lg border-0">
-                    <div class="card-body p-5">
-                        <form method="post" enctype="multipart/form-data">
-                            {% csrf_token %}
-                            
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="{{ form.first_name.id_for_label }}" class="form-label">First Name *</label>
-                                    {{ form.first_name }}
-                                    {% if form.first_name.errors %}
-                                        <div class="text-danger small">{{ form.first_name.errors.0 }}</div>
-                                    {% endif %}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="{{ form.last_name.id_for_label }}" class="form-label">Last Name *</label>
-                                    {{ form.last_name }}
-                                    {% if form.last_name.errors %}
-                                        <div class="text-danger small">{{ form.last_name.errors.0 }}</div>
-                                    {% endif %}
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="{{ form.email.id_for_label }}" class="form-label">Email Address *</label>
-                                    {{ form.email }}
-                                    {% if form.email.errors %}
-                                        <div class="text-danger small">{{ form.email.errors.0 }}</div>
-                                    {% endif %}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="{{ form.phone.id_for_label }}" class="form-label">Phone Number *</label>
-                                    {{ form.phone }}
-                                    {% if form.phone.errors %}
-                                        <div class="text-danger small">{{ form.phone.errors.0 }}</div>
-                                    {% endif %}
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="{{ form.company.id_for_label }}" class="form-label">Company/Organization</label>
-                                    {{ form.company }}
-                                    {% if form.company.errors %}
-                                        <div class="text-danger small">{{ form.company.errors.0 }}</div>
-                                    {% endif %}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="{{ form.job_title.id_for_label }}" class="form-label">Job Title</label>
-                                    {{ form.job_title }}
-                                    {% if form.job_title.errors %}
-                                        <div class="text-danger small">{{ form.job_title.errors.0 }}</div>
-                                    {% endif %}
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="{{ form.attendee_type.id_for_label }}" class="form-label">Attendee Type *</label>
-                                    {{ form.attendee_type }}
-                                    {% if form.attendee_type.errors %}
-                                        <div class="text-danger small">{{ form.attendee_type.errors.0 }}</div>
-                                    {% endif %}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="{{ form.ticket_type.id_for_label }}" class="form-label">Ticket Type *</label>
-                                    {{ form.ticket_type }}
-                                    {% if form.ticket_type.errors %}
-                                        <div class="text-danger small">{{ form.ticket_type.errors.0 }}</div>
-                                    {% endif %}
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="{{ form.dietary_requirements.id_for_label }}" class="form-label">Dietary Requirements</label>
-                                {{ form.dietary_requirements }}
-                                {% if form.dietary_requirements.errors %}
-                                    <div class="text-danger small">{{ form.dietary_requirements.errors.0 }}</div>
-                                {% endif %}
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="{{ form.special_needs.id_for_label }}" class="form-label">Special Needs/Accessibility Requirements</label>
-                                {{ form.special_needs }}
-                                {% if form.special_needs.errors %}
-                                    <div class="text-danger small">{{ form.special_needs.errors.0 }}</div>
-                                {% endif %}
-                            </div>
-
-                            <div class="mb-4">
-                                <label for="{{ form.how_did_you_hear.id_for_label }}" class="form-label">How did you hear about this event?</label>
-                                {{ form.how_did_you_hear }}
-                                {% if form.how_did_you_hear.errors %}
-                                    <div class="text-danger small">{{ form.how_did_you_hear.errors.0 }}</div>
-                                {% endif %}
-                            </div>
-
-                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-lg me-md-2">
-                                    <i class="fas fa-arrow-left me-2"></i>Back to Home
-                                </a>
-                                <button type="submit" class="btn btn-primary btn-lg">
-                                    <i class="fas fa-paper-plane me-2"></i>Register Now
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <div class="text-center mt-4">
-                    <p class="text-muted">
-                        <small>
-                            <i class="fas fa-info-circle me-1"></i>
-                            Registration is free. We will contact you with event details and payment information if applicable.
-                        </small>
-                    </p>
-                </div>
             </div>
         </div>
     </div>
 </section>
 
-<style>
-.form-label {
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 0.5rem;
-}
+<section class="section-padding">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
 
-.form-control:focus,
-.form-select:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.2rem rgba(var(--primary-color-rgb), 0.25);
-}
+            {% if closed %}
+                <div class="card shadow-sm border-0 text-center p-5">
+                    <i class="fas fa-calendar-times fa-4x text-primary-custom mb-4"></i>
+                    {% if sold_out %}
+                        <h2 class="mb-3">{% cms_block "registration.sold_out.title" "Tickets are sold out" %}</h2>
+                        <p class="lead text-muted mb-4">{% cms_block "registration.sold_out.text" "All tickets for this edition have been taken. Contact us to join the waiting list." multiline=True %}</p>
+                    {% else %}
+                        <h2 class="mb-3">{% cms_block "registration.closed.title" "Registration is currently closed" %}</h2>
+                        <p class="lead text-muted mb-4">{% cms_block "registration.closed.text" "Registration for the next summit will open soon. Follow us on social media or contact us to be notified." multiline=True %}</p>
+                    {% endif %}
+                    <div class="d-flex flex-wrap justify-content-center gap-3">
+                        <a href="mailto:{{ site_settings.contact_email }}" class="btn btn-primary btn-lg"><i class="fas fa-envelope me-2"></i>Contact Us</a>
+                        <a href="{% url 'gallery' %}" class="btn btn-outline-primary btn-lg"><i class="fas fa-images me-2"></i>See Past Events</a>
+                    </div>
+                    <div class="cms-manage-row mt-3">{% cms_manage "summit.sitesettings" "Open registration" %}{% cms_manage "summit.tickettype" "Manage tickets" %}</div>
+                </div>
+            {% else %}
 
-.card {
-    border-radius: 15px;
-}
+                <form method="post" novalidate id="registrationForm" class="registration-form">
+                    {% csrf_token %}
+                    <div class="visually-hidden" aria-hidden="true">{{ form.website }}</div>
 
-.btn-primary {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-}
+                    {% if form.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            <i class="fas fa-exclamation-circle me-2"></i>Please correct the highlighted fields below.
+                            {% for e in form.non_field_errors %}<div>{{ e }}</div>{% endfor %}
+                        </div>
+                    {% endif %}
 
-.btn-primary:hover {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-    opacity: 0.9;
-}
-</style>
+                    <!-- Step 1: ticket -->
+                    <div class="reg-step mb-4">
+                        <h2 class="h4 mb-1"><span class="reg-step-num">1</span>{% cms_block "registration.step1.title" "Choose your ticket" %}</h2>
+                        <p class="text-muted ms-5 mb-3">{% cms_block "registration.step1.text" "Select the pass that suits you." %}</p>
+                        <div class="row g-3" role="radiogroup" aria-label="Ticket type">
+                            {% for ticket in tickets %}
+                            <div class="col-md-{% if tickets|length == 1 %}12{% elif tickets|length == 2 %}6{% else %}4{% endif %}">
+                                <label class="ticket-card h-100{% if ticket.is_sold_out %} sold-out{% endif %}">
+                                    <input type="radio" name="{{ form.ticket.html_name }}" value="{{ ticket.pk }}"
+                                           {% if form.ticket.value|stringformat:"s" == ticket.pk|stringformat:"s" %}checked{% endif %}
+                                           {% if ticket.is_sold_out %}disabled{% endif %} required>
+                                    <span class="ticket-card-body">
+                                        <span class="ticket-check"><i class="fas fa-check"></i></span>
+                                        <span class="ticket-name">{% cms_field ticket "name" %}</span>
+                                        <span class="ticket-price">{{ ticket.price|naira }}</span>
+                                        {% if ticket.description or request.user.is_staff %}
+                                            <span class="ticket-desc">{% cms_field ticket "description" placeholder="What's included (one item per line)" %}</span>
+                                        {% endif %}
+                                        {% if ticket.is_sold_out %}
+                                            <span class="badge bg-danger mt-2">Sold out</span>
+                                        {% elif ticket.spots_left is not None and ticket.spots_left <= 20 %}
+                                            <span class="badge bg-warning text-dark mt-2">Only {{ ticket.spots_left }} left</span>
+                                        {% endif %}
+                                    </span>
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% for e in form.ticket.errors %}<div class="text-danger small mt-2">{{ e }}</div>{% endfor %}
+                        <div class="cms-manage-row mt-2">{% cms_manage "summit.tickettype" "Add or change tickets & prices" %}</div>
+                    </div>
+
+                    <!-- Step 2: details -->
+                    <div class="card shadow-sm border-0 reg-step mb-4">
+                        <div class="card-body p-4 p-md-5">
+                            <h2 class="h4 mb-4"><span class="reg-step-num">2</span>{% cms_block "registration.step2.title" "Your details" %}</h2>
+                            <div class="row">
+                                {% for field in form %}
+                                    {% if field.name in "first_name last_name email phone company job_title attendee_type how_did_you_hear" %}
+                                    <div class="col-md-6 mb-3">
+                                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}{% if field.field.required %} <span class="text-danger">*</span>{% endif %}</label>
+                                        {{ field }}
+                                        {% for e in field.errors %}<div class="invalid-feedback d-block">{{ e }}</div>{% endfor %}
+                                    </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+
+                            <details class="reg-more mt-2"{% if form.dietary_requirements.value or form.special_needs.value %} open{% endif %}>
+                                <summary>{% cms_block "registration.step2.extra" "Dietary or accessibility requirements (optional)" %}</summary>
+                                <div class="row mt-3">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="{{ form.dietary_requirements.id_for_label }}" class="form-label">Dietary requirements</label>
+                                        {{ form.dietary_requirements }}
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="{{ form.special_needs.id_for_label }}" class="form-label">Accessibility requirements</label>
+                                        {{ form.special_needs }}
+                                    </div>
+                                </div>
+                            </details>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-column flex-md-row gap-3 justify-content-between align-items-md-center">
+                        <p class="text-muted small mb-0">
+                            <i class="fas fa-lock me-1"></i>{% cms_block "registration.privacy_note" "Your details are only used to manage your attendance at the summit." %}
+                        </p>
+                        <button type="submit" class="btn btn-primary btn-lg px-5" id="registerBtn">
+                            <i class="fas fa-paper-plane me-2"></i>Complete Registration
+                        </button>
+                    </div>
+                </form>
+
+                <div class="text-center mt-5">
+                    <p class="text-muted">
+                        <small><i class="fas fa-info-circle me-1"></i>{% cms_block "registration.footer_note" "You will receive a confirmation email with your registration reference. For paid tickets, we will contact you with payment details." multiline=True %}</small>
+                    </p>
+                </div>
+            {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+    var form = document.getElementById('registrationForm');
+    if (!form) return;
+    form.querySelectorAll('.invalid-feedback').forEach(function (fb) {
+        var input = fb.parentNode.querySelector('input, select, textarea');
+        if (input) input.classList.add('is-invalid');
+    });
+    form.addEventListener('submit', function () {
+        var btn = document.getElementById('registerBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Submitting…';
+    });
+})();
+</script>
 {% endblock %}
