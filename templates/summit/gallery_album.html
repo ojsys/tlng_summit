@@ -1,5 +1,5 @@
 {% extends 'summit/base.html' %}
-{% load static cms %}
+{% load static cms gallery %}
 
 {% block title %}{{ album.title }} - Gallery - {{ site_settings.site_name }}{% endblock %}
 
@@ -27,7 +27,7 @@
     </div>
 </section>
 
-<section class="section-padding">
+<section class="gallery-page">
     <div class="container">
         {% if request.user.is_staff and perms.summit.add_galleryphoto %}
         <div class="cms-gallery-tools mb-4">
@@ -44,22 +44,9 @@
         {% endif %}
 
         {% if photos %}
-        <div class="gallery-grid" data-reorder-url="{% if request.user.is_staff %}{% url 'cms_gallery_reorder' album.pk %}{% endif %}">
+        <div class="collage" data-reorder-url="{% if request.user.is_staff %}{% url 'cms_gallery_reorder' album.pk %}{% endif %}">
             {% for photo in photos %}
-            <figure class="gallery-item" data-photo-id="{{ photo.pk }}">
-                <a href="{{ photo.image.url }}" data-lightbox="album" data-caption="{{ photo.caption }}">
-                    <img src="{{ photo.thumb_url }}" alt="{{ photo.caption|default:album.title }}" loading="lazy"
-                         {% if photo.width %}width="{{ photo.width }}" height="{{ photo.height }}"{% endif %}>
-                </a>
-                {% if request.user.is_staff %}
-                    {% if perms.summit.delete_galleryphoto %}
-                    <button type="button" class="cms-photo-delete" data-url="{% url 'cms_photo_delete' photo.pk %}" title="Delete photo"><i class="fas fa-trash"></i></button>
-                    {% endif %}
-                    <figcaption>{% cms_field photo "caption" placeholder="Add caption" %}</figcaption>
-                {% elif photo.caption %}
-                    <figcaption>{{ photo.caption }}</figcaption>
-                {% endif %}
-            </figure>
+                {% include "summit/includes/collage_tile.html" with group="album" tile=photo|tile_class:forloop.counter manage=True %}
             {% endfor %}
         </div>
         {% else %}

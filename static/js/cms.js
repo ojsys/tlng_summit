@@ -321,6 +321,7 @@
                 var items = Array.prototype.slice.call(grid.querySelectorAll('.gallery-item'));
                 grid.insertBefore(dragged, items.indexOf(dragged) < items.indexOf(over) ? over.nextSibling : over);
                 var order = Array.prototype.map.call(grid.querySelectorAll('.gallery-item'), function (n) { return n.dataset.photoId; });
+                if (window.balanceCollages) window.balanceCollages();
                 post(grid.dataset.reorderUrl, JSON.stringify({ order: order }), true).then(function (res) {
                     toast(res.ok ? 'Order saved ✓' : (res.error || 'Could not save order.'), !res.ok);
                 });

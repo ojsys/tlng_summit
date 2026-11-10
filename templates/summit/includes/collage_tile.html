@@ -1,0 +1,24 @@
+{% load cms %}{% comment %}
+One photo in a collage. Context: photo, group (lightbox group), tile (extra classes),
+manage (True on album pages: staff get delete / caption editing / drag to reorder).
+{% endcomment %}<figure class="collage-tile gallery-item {{ tile }}" data-photo-id="{{ photo.pk }}" data-album="{{ photo.album.slug }}">
+    <a href="{{ photo.image.url }}" class="collage-link" data-lightbox="{{ group }}"
+       data-caption="{{ photo.caption }}" data-album-title="{{ photo.album.title }}"
+       data-album-url="{{ photo.album.get_absolute_url }}" data-thumb="{{ photo.thumb_url }}"
+       aria-label="View photo{% if photo.caption %}: {{ photo.caption }}{% endif %}">
+        <img src="{{ photo.thumb_url }}" alt="{{ photo.caption|default:photo.album.title }}" loading="lazy" decoding="async">
+        <span class="tile-overlay" aria-hidden="true">
+            <span class="tile-zoom"><i class="fas fa-expand"></i></span>
+            <span class="tile-text">
+                {% if photo.caption %}<span class="tile-caption">{{ photo.caption }}</span>{% endif %}
+                <span class="tile-album">{{ photo.album.title }}</span>
+            </span>
+        </span>
+    </a>
+    {% if manage and request.user.is_staff %}
+        {% if perms.summit.delete_galleryphoto %}
+        <button type="button" class="cms-photo-delete" data-url="{% url 'cms_photo_delete' photo.pk %}" title="Delete photo"><i class="fas fa-trash"></i></button>
+        {% endif %}
+        <figcaption class="tile-edit-caption">{% cms_field photo "caption" placeholder="Add caption" %}</figcaption>
+    {% endif %}
+</figure>

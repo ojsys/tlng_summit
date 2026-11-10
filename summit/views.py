@@ -1,6 +1,4 @@
 import logging
-from itertools import groupby
-
 from django.conf import settings
 from django.contrib import messages
 from django.core.mail import send_mail
@@ -24,10 +22,9 @@ def _client_ip(request):
 
 def home(request):
     highlights = Highlight.objects.filter(is_active=True)
-    gallery_photos = (GalleryPhoto.objects
-                      .filter(album__is_published=True)
-                      .select_related('album')
-                      .order_by('-album__year', 'album__order', 'order', 'id')[:9])
+    public_photos = GalleryPhoto.objects.filter(album__is_published=True)
+    gallery_photos = list(public_photos.select_related('album')
+                          .order_by('-album__year', 'album__order', 'order', 'id')[:7])
     context = {
         'event_content': EventContent.get_solo(),
         'about_section_content': AboutSectionContent.get_solo(),
@@ -37,6 +34,7 @@ def home(request):
         'sponsors': Sponsor.objects.filter(is_active=True).select_related('level'),
         'summit_organizers': SummitOrganizer.objects.filter(is_active=True),
         'gallery_photos': gallery_photos,
+        'gallery_total': public_photos.count() if gallery_photos else 0,
     }
     return render(request, 'summit/home.html', context)
 
@@ -83,14 +81,14 @@ def _visible_albums(request):
 
 
 def gallery(request):
-    albums = list(_visible_albums(request).prefetch_related('photos'))
-    if not request.user.is_staff:
-        albums = [a for a in albums if a.photo_count]
-    years = sorted({a.year for a in albums}, reverse=True)
+    albums = [a for a in _visible_albums(request) if a.photo_count or request.user.is_staff]
+    photos = (GalleryPhoto.objects.filter(album__in=[a.pk for a in albums])
+              .select_related('album')
+              .order_by('-album__year', 'album__order', '-album__event_date', 'album_id', 'order', 'id'))
     context = {
-        'albums_by_year': [(year, list(group)) for year, group in groupby(albums, key=lambda a: a.year)],
-        'years': years,
-        'total_photos': sum(a.photo_count for a in albums),
+        'albums': albums,
+        'photos': photos,
+        'years': sorted({a.year for a in albums}, reverse=True),
     }
     return render(request, 'summit/gallery.html', context)
 

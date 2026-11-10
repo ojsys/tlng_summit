@@ -310,6 +310,39 @@ class GalleryTest(BaseTest):
         self.assertEqual(self.album.photos.count(), 2)
 
 
+class CollageTest(BaseTest):
+    def setUp(self):
+        self.a = GalleryAlbum.objects.create(title='Summit 2025', year=2025)
+        self.b = GalleryAlbum.objects.create(title='Dinner 2024', year=2024)
+        for i in range(6):
+            GalleryPhoto.objects.create(album=self.a, image=image_file(f'a{i}.jpg', (300, 200)), order=i)
+        for i in range(4):
+            GalleryPhoto.objects.create(album=self.b, image=image_file(f'b{i}.jpg', (200, 300)), order=i)
+
+    def test_home_bento_with_more_tile(self):
+        r = self.client.get(reverse('home'))
+        self.assertContains(r, 'class="bento"')
+        self.assertContains(r, '+4')  # 10 photos, 6 shown + "more" tile
+        self.assertContains(r, 'data-lightbox="home"', count=6)
+
+    def test_gallery_page_shows_all_photos_with_event_filters(self):
+        r = self.client.get(reverse('gallery'))
+        self.assertContains(r, 'data-lightbox="gallery"', count=10)
+        self.assertContains(r, 'data-filter="summit-2025"')
+        self.assertContains(r, 'data-filter="dinner-2024"')
+        self.assertContains(r, 'data-album-title="Dinner 2024"')
+
+    def test_tile_shapes(self):
+        from .templatetags.gallery import tile_class
+        portrait = GalleryPhoto(width=200, height=300)
+        landscape = GalleryPhoto(width=300, height=200)
+        panorama = GalleryPhoto(width=900, height=300)
+        self.assertEqual(tile_class(landscape, 1), 'tile-xl')
+        self.assertEqual(tile_class(portrait, 2), 'tile-tall')
+        self.assertEqual(tile_class(panorama, 3), 'tile-wide')
+        self.assertEqual(tile_class(landscape, 3), '')
+
+
 class AdminTest(BaseTest):
     def test_dashboard_and_changelists_load(self):
         self.make_staff()
