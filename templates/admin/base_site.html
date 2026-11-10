@@ -1,0 +1,53 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block extrastyle %}{{ block.super }}
+<style>
+  :root, html[data-theme="light"] {
+    --primary: #008751;
+    --secondary: #006B3F;
+    --accent: #c9f2dd;
+    --header-bg: #006B3F;
+    --header-link-color: #fff;
+    --breadcrumbs-bg: #008751;
+    --link-fg: #006B3F;
+    --link-hover-color: #004d2d;
+    --link-selected-fg: #004d2d;
+    --button-bg: #008751;
+    --button-hover-bg: #006B3F;
+    --default-button-bg: #006B3F;
+    --default-button-hover-bg: #004d2d;
+    --selected-row: #e8f7ef;
+    --object-tools-bg: #008751;
+    --object-tools-hover-bg: #006B3F;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --primary: #2fb978; --header-bg: #0b3d27; --breadcrumbs-bg: #0f5135; --link-fg: #6fd6a3; --button-bg: #1f8a58; --default-button-bg: #1f8a58; --object-tools-bg: #1f8a58; --selected-row: #12352a; }
+  }
+  html[data-theme="dark"] { --primary: #2fb978; --header-bg: #0b3d27; --breadcrumbs-bg: #0f5135; --link-fg: #6fd6a3; --button-bg: #1f8a58; --default-button-bg: #1f8a58; --object-tools-bg: #1f8a58; --selected-row: #12352a; }
+  #branding h1 { font-weight: 600; letter-spacing: .2px; }
+  #branding img { height: 34px; vertical-align: middle; margin-right: 10px; border-radius: 4px; background: #fff; padding: 2px; }
+  .module caption, .module h2, .inline-group h2 { background: var(--primary); }
+  .cms-live-link { background: #f4c542; color: #1d1d1d !important; padding: 4px 10px; border-radius: 14px; font-weight: 600; text-decoration: none !important; margin-right: 6px; }
+  .cms-live-link:hover { background: #ffd95e; }
+  fieldset .description { background: var(--darkened-bg); padding: 8px 12px; border-radius: 4px; }
+</style>
+{% endblock %}
+
+{% block branding %}
+<div id="site-name">
+  <a href="{% url 'admin:index' %}">
+    {% if site_settings.site_logo %}<img src="{{ site_settings.site_logo.url }}" alt="">{% endif %}
+    <h1 style="display:inline">{{ site_header|default:_('Django administration') }}</h1>
+  </a>
+</div>
+{% if user.is_anonymous %}{% include "admin/color_theme_toggle.html" %}{% endif %}
+{% endblock %}
+
+{% block userlinks %}
+<a class="cms-live-link" href="/?edit=1" title="Open the website with live editing switched on">✏️ Edit site live</a>
+{{ block.super }}
+{% endblock %}
+
+{% block nav-global %}{% endblock %}

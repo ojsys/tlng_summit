@@ -1,5 +1,5 @@
 {% extends 'summit/base.html' %}
-{% load static %}
+{% load static cms %}
 
 {% block title %}Speakers - Nigeria Transport and Logistics Summit{% endblock %}
 
@@ -9,11 +9,9 @@
     <div class="container hero-content">
         <div class="row">
             <div class="col-lg-8">
-                <h1 class="display-4 fw-bold mb-4">Our Distinguished Speakers</h1>
-                <p class="lead">
-                    Meet the industry experts, thought leaders, and visionaries who will 
-                    share their insights at the Nigeria Transport and Logistics Summit.
-                </p>
+                <h1 class="display-4 fw-bold mb-4">{% cms_block "speakers.hero.title" "Our Distinguished Speakers" %}</h1>
+                <p class="lead">{% cms_block "speakers.hero.text" "Meet the industry experts, thought leaders, and visionaries who will share their insights at the Nigeria Transport and Logistics Summit." multiline=True %}</p>
+                <div class="cms-manage-row text-start">{% cms_manage "summit.speaker" "Add speaker" action="add" %}{% cms_manage "summit.speaker" "Manage speakers" %}</div>
             </div>
         </div>
     </div>
@@ -28,10 +26,10 @@
                 <div class="col-lg-4 col-md-6 mb-5">
                     <div class="card speaker-card card-hover h-100">
                         {% if speaker.photo %}
-                            <img src="{{ speaker.photo.url }}" class="card-img-top" alt="{{ speaker.name }}">
+                            <img src="{{ speaker.photo.url }}" class="card-img-top" alt="{{ speaker.name }}" loading="lazy" {% cms_image speaker "photo" %}>
                         {% else %}
-                            <div class="card-img-top bg-primary-custom d-flex align-items-center justify-content-center" 
-                                 style="height: 300px;">
+                            <div class="card-img-top bg-primary-custom d-flex align-items-center justify-content-center"
+                                 style="height: 300px;" {% cms_image speaker "photo" %}>
                                 <i class="fas fa-user fa-4x text-white"></i>
                             </div>
                         {% endif %}
@@ -45,10 +43,10 @@
                         {% endif %}
                         
                         <div class="card-body">
-                            <h5 class="card-title text-primary-custom">{{ speaker.name }}</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">{{ speaker.title }}</h6>
+                            <h5 class="card-title text-primary-custom">{% cms_field speaker "name" %}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{% cms_field speaker "title" %}</h6>
                             {% if speaker.company %}
-                                <p class="card-text"><small class="text-primary-custom fw-bold">{{ speaker.company }}</small></p>
+                                <p class="card-text"><small class="text-primary-custom fw-bold">{% cms_field speaker "company" %}</small></p>
                             {% endif %}
                             
                             <p class="card-text">{{ speaker.bio|truncatewords:30 }}</p>
@@ -129,7 +127,7 @@
                                                 <i class="fas fa-user-tie me-2"></i>Biography
                                             </h6>
                                             <div class="text-muted lh-lg">
-                                                {{ speaker.bio|linebreaks }}
+                                                {% cms_field speaker "bio" %}
                                             </div>
                                         </div>
                                         
@@ -170,11 +168,8 @@
         {% else %}
             <div class="text-center py-5">
                 <i class="fas fa-users fa-4x text-muted mb-4"></i>
-                <h3 class="text-muted">Speakers Coming Soon</h3>
-                <p class="lead text-muted">
-                    We're working on confirming our amazing lineup of speakers. 
-                    Check back soon for updates!
-                </p>
+                <h3 class="text-muted">{% cms_block "speakers.empty.title" "Speakers Coming Soon" %}</h3>
+                <p class="lead text-muted">{% cms_block "speakers.empty.text" "We're working on confirming our amazing lineup of speakers. Check back soon for updates!" %}</p>
             </div>
         {% endif %}
     </div>
@@ -185,13 +180,10 @@
     <div class="container text-center">
         <div class="row">
             <div class="col-lg-8 mx-auto">
-                <h2 class="mb-4">Interested in Speaking?</h2>
-                <p class="lead mb-4">
-                    We're always looking for industry experts to share their knowledge 
-                    and insights with our audience.
-                </p>
-                <a href="mailto:speakers@tlngsummit.com" class="btn btn-light btn-lg">
-                    <i class="fas fa-envelope me-2"></i>Contact Us
+                <h2 class="mb-4">{% cms_block "speakers.cta.title" "Interested in Speaking?" %}</h2>
+                <p class="lead mb-4">{% cms_block "speakers.cta.text" "We're always looking for industry experts to share their knowledge and insights with our audience." multiline=True %}</p>
+                <a href="mailto:{{ site_settings.speakers_contact }}?subject=Speaking%20enquiry" class="btn btn-light btn-lg">
+                    <i class="fas fa-envelope me-2"></i>{% cms_block "speakers.cta.button" "Contact Us" %}
                 </a>
             </div>
         </div>

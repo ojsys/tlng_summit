@@ -1,0 +1,92 @@
+{% extends 'summit/base.html' %}
+{% load static cms %}
+
+{% block title %}{{ album.title }} - Gallery - {{ site_settings.site_name }}{% endblock %}
+
+{% block extra_head %}
+<meta property="og:title" content="{{ album.title }}">
+{% if album.cover %}<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ album.cover }}">{% endif %}
+{% endblock %}
+
+{% block content %}
+<section class="hero-section page-hero album-hero{% if album.cover %} has-custom-bg{% endif %}"
+         {% if album.cover %}style="--custom-bg-url: url('{{ album.cover }}')"{% endif %}
+         {% cms_image album "cover_image" background=True %}>
+    <div class="container hero-content">
+        <a href="{% url 'gallery' %}" class="text-white-50 text-decoration-none small"><i class="fas fa-arrow-left me-2"></i>All albums</a>
+        <h1 class="display-5 fw-bold mt-3 mb-3">{% cms_field album "title" %}</h1>
+        <p class="mb-0 opacity-75">
+            <i class="fas fa-camera me-1"></i>{{ photos|length }} photo{{ photos|length|pluralize }}
+            {% if album.event_date %}<span class="mx-2">•</span><i class="far fa-calendar me-1"></i>{{ album.event_date|date:"F j, Y" }}{% endif %}
+            {% if album.location %}<span class="mx-2">•</span><i class="fas fa-map-marker-alt me-1"></i>{{ album.location }}{% endif %}
+        </p>
+        {% if album.description or request.user.is_staff %}
+        <div class="lead mt-3 mb-0 album-description">{% cms_field album "description" placeholder="Add a short description of this event" %}</div>
+        {% endif %}
+        {% if not album.is_published %}<span class="badge bg-warning text-dark mt-3">Hidden from public: publish it in the admin</span>{% endif %}
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container">
+        {% if request.user.is_staff and perms.summit.add_galleryphoto %}
+        <div class="cms-gallery-tools mb-4">
+            <div id="cms-gallery-drop" class="cms-dropzone" role="button" tabindex="0"
+                 data-upload-url="{% url 'cms_gallery_upload' album.pk %}">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <strong>Drop photos here or click to choose</strong>
+                <div class="small mt-1">Add as many as you like. They're resized automatically. Drag photos below to reorder them.</div>
+                <input type="file" accept="image/*" multiple hidden>
+                <div id="cms-gallery-status" class="fw-bold mt-2" aria-live="polite"></div>
+            </div>
+            <div class="cms-manage-row mt-2">{% cms_manage "summit.galleryalbum" "Album settings" obj=album %}</div>
+        </div>
+        {% endif %}
+
+        {% if photos %}
+        <div class="gallery-grid" data-reorder-url="{% if request.user.is_staff %}{% url 'cms_gallery_reorder' album.pk %}{% endif %}">
+            {% for photo in photos %}
+            <figure class="gallery-item" data-photo-id="{{ photo.pk }}">
+                <a href="{{ photo.image.url }}" data-lightbox="album" data-caption="{{ photo.caption }}">
+                    <img src="{{ photo.thumb_url }}" alt="{{ photo.caption|default:album.title }}" loading="lazy"
+                         {% if photo.width %}width="{{ photo.width }}" height="{{ photo.height }}"{% endif %}>
+                </a>
+                {% if request.user.is_staff %}
+                    {% if perms.summit.delete_galleryphoto %}
+                    <button type="button" class="cms-photo-delete" data-url="{% url 'cms_photo_delete' photo.pk %}" title="Delete photo"><i class="fas fa-trash"></i></button>
+                    {% endif %}
+                    <figcaption>{% cms_field photo "caption" placeholder="Add caption" %}</figcaption>
+                {% elif photo.caption %}
+                    <figcaption>{{ photo.caption }}</figcaption>
+                {% endif %}
+            </figure>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5 text-muted">
+            <i class="fas fa-images fa-3x mb-3"></i>
+            <p class="lead">No photos in this album yet.</p>
+        </div>
+        {% endif %}
+
+        {% if other_albums %}
+        <div class="mt-5 pt-4 border-top">
+            <h2 class="h4 mb-4">More albums</h2>
+            <div class="row g-4">
+                {% for other in other_albums %}
+                <div class="col-md-4">
+                    <a href="{{ other.get_absolute_url }}" class="album-card">
+                        <div class="album-cover">
+                            {% if other.cover %}<img src="{{ other.cover }}" alt="{{ other.title }}" loading="lazy">{% endif %}
+                            <span class="album-count"><i class="fas fa-camera me-1"></i>{{ other.photo_count }}</span>
+                        </div>
+                        <div class="album-body"><h3 class="album-title">{{ other.title }}</h3><div class="album-meta"><span>{{ other.year }}</span></div></div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

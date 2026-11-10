@@ -1,0 +1,16 @@
+{% autoescape off %}A new registration has been received.
+
+Reference:  {{ registration.reference }}
+Name:       {{ registration.full_name }}
+Email:      {{ registration.email }}
+Phone:      {{ registration.phone }}
+Company:    {{ registration.company|default:"-" }}
+Job title:  {{ registration.job_title|default:"-" }}
+Attendee:   {{ registration.get_attendee_type_display }}
+Ticket:     {{ registration.ticket }}
+Dietary:    {{ registration.dietary_requirements|default:"-" }}
+Access:     {{ registration.special_needs|default:"-" }}
+Heard via:  {{ registration.how_did_you_hear|default:"-" }}
+
+Manage registrations: {{ site_url }}admin/summit/conferenceregistration/
+{% endautoescape %}
